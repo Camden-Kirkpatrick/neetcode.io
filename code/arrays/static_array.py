@@ -1,5 +1,3 @@
-# Implementation of a Static Array
-
 class MyArray:
     """
     A fixed-capacity (static) array implementation.
