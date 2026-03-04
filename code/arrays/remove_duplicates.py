@@ -1,3 +1,5 @@
+# Algorithm to remove all duplicates from a sorted array
+
 # This is not the correct way to remove all duplicates.
 #
 # Example:
@@ -55,12 +57,12 @@ def remove_duplicates(nums: list[int]) -> int:
         found.append(nums[i])
         i += 1
     print(nums)
+    # return the number of unique elements
     return len(nums)
 
 
-# nums must be sorted for the algorithm to work
 nums = [1, 2, 2, 3, 4, 5, 6, 7, 7]
-# how many unique numbers are in the list?
-print(remove_duplicates(nums))
+num_unique_nums = remove_duplicates(nums)
+print(num_unique_nums)
 # IndexError occurs
 # print(remove_duplicates_incorrect(nums))

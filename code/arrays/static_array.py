@@ -154,7 +154,7 @@ class MyArray:
         2. Ensure array is not empty.
         3. Shift elements left starting from index.
         4. Decrement logical length.
-        5. Clear the freed slot by setting it to None.
+        5. Clear the now-unused slot to remove the duplicated value left after shifting.
 
         Time Complexity: O(n)
         """
@@ -180,7 +180,7 @@ class MyArray:
         1. Ensure array is not empty.
         2. Shift all elements left by one.
         3. Decrement logical length.
-        4. Clear last slot.
+        4. Clear the now-unused slot to remove the duplicated value left after shifting.
 
         Time Complexity: O(n)
         """
@@ -209,8 +209,8 @@ class MyArray:
             print("Can't delete from empty array")
             return
 
-        self.arr[self.length - 1] = None
         self.length -= 1
+        self.arr[self.length] = None
 
 
 
