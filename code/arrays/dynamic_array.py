@@ -1,3 +1,5 @@
+# Implementation of a Dynamic Array
+
 class DynamicArray:
     def __init__(self, capacity):
         self.capacity = capacity
