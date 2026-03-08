@@ -105,6 +105,7 @@ def merge_linked_lists(head1, head2):
     # Attach whichever list still has remaining nodes
     node.next = cur1 or cur2
 
+    # dummy isn't part of the merged list, so return the next node
     return dummy.next
 
 def print_list(list):
@@ -114,7 +115,7 @@ def print_list(list):
             print(current.data, end=" ")
             current = current.next
         print()
-     
+
 
 
 l0 = Node(1)
