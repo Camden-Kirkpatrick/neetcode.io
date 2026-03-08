@@ -1,7 +1,7 @@
 # Merge Two Sorted Linked Lists
 #
-# Merging two linked lists means creating a new list that contains all nodes
-# from both lists while maintaining sorted order.
+# Merging two linked lists means combining two already-sorted lists into
+# one sorted list by relinking the existing nodes.
 #
 # Example:
 #
@@ -14,25 +14,33 @@
 # Merged list (n + m nodes):
 # 1 -> 1 -> 3 -> 4 -> 5 -> 7 -> 10 -> 13 -> 19 -> None
 #
+# To simplify the algorithm, we use a **dummy node**.
+# The dummy node acts as a temporary starting point so we do not need
+# special logic to determine the head of the merged list.
+#
 # Pointers used:
 #
-# cur1   : current node in list 1
-# cur2   : current node in list 2
-# list3  : last node in the merged list being built
-# new_head : start of the merged list (never moves)
+# cur1  : current node in list 1
+# cur2  : current node in list 2
+# node  : last node in the merged list being built (tail pointer)
+# dummy : fixed starting node used to simplify linking
 #
 # Walkthrough with the example lists:
 #
 # Start
+# dummy -> None
+#          ^
+#        node
+#
 # cur1 = 1
 # cur2 = 1
 #
 # Compare cur1 and cur2
-# 1 <= 1 so create first node from list1
+# 1 <= 1 so attach cur1
 #
-# new_head -> 1
-#            ^
-#          list3
+# dummy -> 1
+#           ^
+#         node
 #
 # cur1 moves to 4
 #
@@ -40,11 +48,11 @@
 # cur1 = 4
 # cur2 = 1
 #
-# 1 < 4 so append cur2
+# 1 < 4 so attach cur2
 #
-# new_head -> 1 -> 1
-#                 ^
-#               list3
+# dummy -> 1 -> 1
+#                ^
+#              node
 #
 # cur2 moves to 3
 #
@@ -52,76 +60,52 @@
 # cur1 = 4
 # cur2 = 3
 #
-# 3 < 4 so append cur2
+# 3 < 4 so attach cur2
 #
-# new_head -> 1 -> 1 -> 3
-#                      ^
-#                    list3
+# dummy -> 1 -> 1 -> 3
+#                     ^
+#                   node
 #
-# cur2 moves to 7
+# Continue comparing nodes until one list becomes None.
 #
-# Iteration 3
-# cur1 = 4
-# cur2 = 7
+# Once one list ends, attach the remaining portion of the other list
+# directly to the merged list.
 #
-# 4 < 7 so append cur1
-#
-# new_head -> 1 -> 1 -> 3 -> 4
-#                           ^
-#                         list3
-#
-# Continue until one list becomes None.
-#
-# Once one list ends, append the remaining nodes
-# from the other list directly to the merged list.
+# Finally, return dummy.next to skip the temporary dummy node.
 #
 # Time Complexity: O(n + m)
 # We traverse each node from both lists once.
-
+#
 # Space Complexity: O(1)
-# No new nodes are created; we reuse the existing nodes and only update their next pointers.
+# No new nodes are created; we reuse the existing nodes and only update
+# their next pointers.
 
 class Node:
     def __init__(self, data=0, next=None):
         self.data = data
         self.next = next
 
+
 def merge_linked_lists(head1, head2):
+    dummy = node = Node()
+
     cur1 = head1
     cur2 = head2
-    list3 = None
-
-    if cur1.data < cur2.data:
-            list3 = cur1
-            cur1 = cur1.next
-    else:
-         list3 = cur2
-         cur2 = cur2.next
-
-    new_head = list3
 
     while cur1 and cur2:
         if cur1.data < cur2.data:
-            list3.next = cur1
-            list3 = list3.next
+            node.next = cur1
             cur1 = cur1.next
         else:
-            list3.next = cur2
-            list3 = list3.next
+            node.next = cur2
             cur2 = cur2.next
 
-    while cur1:
-         list3.next = cur1
-         list3 = list3.next
-         cur1 = cur1.next
+        node = node.next
 
-    while cur2:
-         list3.next = cur2
-         list3 = list3.next
-         cur2 = cur2.next
-        
+    # Attach whichever list still has remaining nodes
+    node.next = cur1 or cur2
 
-    return new_head
+    return dummy.next
 
 def print_list(list):
         current = list
