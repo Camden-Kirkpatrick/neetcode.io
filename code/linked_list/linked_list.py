@@ -5,6 +5,17 @@ class Node:
 
 
 class LinkedList:
+    """
+    Singly Linked List implementation.
+
+    Design Features:
+    - Uses a dummy (sentinel) head node.
+    - Maintains a tail pointer for O(1) appends.
+
+    The first real node is always stored at head.next.
+    If head.next is None, the list is empty.
+    """
+
     def __init__(self):
         # head is a dummy/sentinel node.
         # The first real node is stored at head.next.
@@ -13,6 +24,17 @@ class LinkedList:
         self.tail = self.head
 
     def add_node(self, node):
+        """
+        Append a node to the end of the linked list.
+
+        Algorithm:
+        1. Ensure the new node does not reference another node.
+        2. Link the new node after the current tail.
+        3. Update the tail pointer.
+
+        Time Complexity: O(1)
+        """
+
         # Add a node to the end of the linked list
 
         # node is the new tail, so it shouldn't point to another node
@@ -25,6 +47,18 @@ class LinkedList:
         self.tail = node
 
     def get_node(self, index):
+        """
+        Return the node at the given index.
+
+        Algorithm:
+        1. Start at the first real node (head.next).
+        2. Traverse forward `index` times.
+        3. If traversal reaches None early, the index is invalid.
+        4. Return the node found at that position.
+
+        Time Complexity: O(n)
+        """
+
         # Return the node at the given index
 
         if index < 0:
@@ -53,6 +87,16 @@ class LinkedList:
         return current
 
     def set_node(self, index, value):
+        """
+        Replace the data stored in a node at the given index.
+
+        Algorithm:
+        1. Traverse the list until reaching the desired index.
+        2. Replace the node's data with the new value.
+
+        Time Complexity: O(n)
+        """
+
         # Update the data stored in the node at the given index
 
         if index < 0:
@@ -78,6 +122,19 @@ class LinkedList:
         current.data = value
 
     def delete_node(self, index):
+        """
+        Delete the node at the given index.
+
+        Algorithm:
+        1. Start at the dummy head node so we always have a
+           reference to the node before the one being deleted.
+        2. Traverse to the node before the target index.
+        3. Skip over the node being deleted.
+        4. If the deleted node was the tail, move the tail pointer.
+
+        Time Complexity: O(n)
+        """
+
         # Delete the node at the given index
 
         if index < 0:
@@ -116,6 +173,15 @@ class LinkedList:
             self.tail = prev
 
     def print_list(self):
+        """
+        Print all values stored in the linked list.
+
+        Algorithm:
+        Traverse the list from head.next until reaching None.
+
+        Time Complexity: O(n)
+        """
+
         # Print all values in the linked list
 
         current = self.head.next

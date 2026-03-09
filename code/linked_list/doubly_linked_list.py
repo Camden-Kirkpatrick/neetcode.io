@@ -1,145 +1,20 @@
-"""
-Doubly Linked List Design Overview
-----------------------------------
-
-This implementation uses three important design choices:
-
-1. Dummy / Sentinel Head Node
-2. Tail Pointer
-3. Previous (prev) Pointer
-
-
-1. Dummy / Sentinel Node
-------------------------
-
-The linked list starts with a special node called a sentinel (or dummy node).
-
-    head (sentinel) <-> A <-> B <-> C
-
-The sentinel does not store real data. Its job is to simplify insertions
-and deletions at the front of the list.
-
-Without a sentinel node, the first real node has no node before it:
-
-    head -> A <-> B <-> C
-
-So deleting A requires special logic:
-
-    if index == 0:
-        self.head = self.head.next
-
-Using a sentinel fixes this problem because every real node always has
-a previous node.
-
-    head (sentinel) <-> A <-> B <-> C
-
-Now deleting the first node uses the same pointer update pattern used
-for all nodes:
-
-    prev.next = next
-    next.prev = prev
-
-The first real node is always stored at:
-
-    head.next
-
-If head.next is None, the list is empty.
-
-
-2. Tail Pointer
----------------
-
-The list also stores a reference to the last node:
-
-    self.tail
-
-This allows appending nodes in constant time.
-
-Without a tail pointer:
-
-    add_node() requires traversing the entire list
-    Time Complexity: O(n)
-
-With a tail pointer:
-
-    self.tail.next = new_node
-    new_node.prev = self.tail
-    self.tail = new_node
-
-    Time Complexity: O(1)
-
-The tail pointer also allows deleting the last node in O(1):
-
-    self.tail = self.tail.prev
-    self.tail.next = None
-
-
-3. Previous (prev) Pointer
---------------------------
-
-Each node stores two pointers:
-
-    next -> the node after it
-    prev -> the node before it
-
-This makes the structure a doubly linked list:
-
-    A <-> B <-> C
-
-The prev pointer allows us to:
-
-• Traverse the list backwards
-• Delete nodes when we already have a reference to them
-• Easily update neighbors during insertion and deletion
-
-Deletion becomes:
-
-    prev.next = next
-    next.prev = prev
-
-
-Supported Operations
---------------------
-
-This implementation supports several deletion strategies:
-
-Delete by index:
-    Traverse to the node and unlink it.
-
-Delete by reference:
-    If we already have a pointer to the node, it can be removed in O(1).
-
-Delete head:
-    Remove the first real node (head.next).
-
-Delete tail:
-    Remove the last node using the tail pointer.
-
-Reverse traversal:
-    Walk backward through the list using prev pointers.
-
-
-Summary
--------
-
-Sentinel Node
-    Removes edge cases when inserting or deleting the first node.
-
-Tail Pointer
-    Allows O(1) insertion and deletion at the end of the list.
-
-Prev Pointer
-    Enables backward traversal and O(1) deletion when a node reference
-    is already known.
-"""
-
 class Node:
     def __init__(self, data=0, next=None, prev=None):
         self.data = data
         self.next = next
         self.prev = prev
 
+
 class LinkedList:
+    """
+    Doubly Linked List implementation.
+
+    Design Features:
+    - Dummy (sentinel) head node
+    - Tail pointer for O(1) appends
+    - prev pointers for reverse traversal and O(1) deletion by reference
+    """
+
     def __init__(self):
         # head is a dummy/sentinel node.
         # The first real node is stored at head.next.
@@ -149,7 +24,17 @@ class LinkedList:
 
 
     def add_node(self, node):
-        # Add a node to the end of the linked list
+        """
+        Append a node to the end of the list.
+
+        Algorithm:
+        1. Disconnect the new node from any existing list.
+        2. Link the new node after the current tail.
+        3. Update both next and prev pointers.
+        4. Move the tail pointer forward.
+
+        Time Complexity: O(1)
+        """
 
         # node is the new tail, so it shouldn't point to another node
         node.next = None
@@ -160,15 +45,25 @@ class LinkedList:
 
         # Update the tail pointer
         self.tail = node
-    
+
 
     def get_node(self, index):
-        # Return the node at the given index
+        """
+        Return the node at the given index.
+
+        Algorithm:
+        1. Start at the first real node (head.next).
+        2. Traverse forward `index` steps.
+        3. If traversal reaches None early, the index is invalid.
+        4. Return the node found.
+
+        Time Complexity: O(n)
+        """
 
         if index < 0:
             print("Index must be greater than -1")
             return
-        
+
         current = self.head.next
 
         # Move forward index times
@@ -186,18 +81,26 @@ class LinkedList:
         if current is None:
             print("Invalid index")
             return
-        
+
         # current now points to the node at the requested index
         return current
 
 
     def set_node(self, index, value):
-        # Update the data stored in the node at the given index
+        """
+        Update the data stored in the node at the given index.
+
+        Algorithm:
+        1. Traverse to the node at the given index.
+        2. Replace the data stored in that node.
+
+        Time Complexity: O(n)
+        """
 
         if index < 0:
             print("Index must be greater than -1")
             return
-        
+
         current = self.head.next
 
         # Traverse to the desired index
@@ -218,7 +121,18 @@ class LinkedList:
 
 
     def delete_node_index(self, index):
-        # Delete the node at the given index
+        """
+        Delete the node at the given index.
+
+        Algorithm:
+        1. Traverse to the node at the given index.
+        2. Store references to the nodes before and after it.
+        3. Update pointers so the previous node skips the deleted node.
+        4. Fix the backward pointer of the next node.
+        5. If the deleted node was the tail, update the tail pointer.
+
+        Time Complexity: O(n)
+        """
 
         if index < 0:
             print("Index must be greater than -1")
@@ -272,7 +186,22 @@ class LinkedList:
 
 
     def delete_node_reference(self, node):
-        # Delete a node when we already have a reference to it
+        """
+        Delete a node when a reference to it is already known.
+
+        Algorithm:
+        1. Identify the node before and after the target node.
+        2. Connect those nodes together.
+        3. Update both next and prev pointers.
+        4. If the deleted node was the tail, update the tail pointer.
+
+        Time Complexity: O(1)
+        """
+
+        # The sentinel head is not a real node.
+        # The first real node in the list is stored at head.next.
+        if node is self.head:
+            return
 
         prev_node = node.prev
         next_node = node.next
@@ -284,10 +213,25 @@ class LinkedList:
         # Fix the backward pointer of the next node
         if next_node:
             next_node.prev = prev_node
+        else:
+            # If the deleted node was the tail,
+            # move the tail pointer back
+            self.tail = prev_node
 
-    
+
     def delete_head(self):
-        # Delete the first real node (self.head.next)
+        """
+        Delete the first real node (head.next).
+
+        Algorithm:
+        1. Check if the list is empty.
+        2. Store the first real node.
+        3. Move head.next to the second node.
+        4. Fix the backward pointer of the new first node.
+        5. If the list becomes empty, reset the tail pointer.
+
+        Time Complexity: O(1)
+        """
 
         # If the list is empty, nothing to delete
         if self.head.next is None:
@@ -306,10 +250,20 @@ class LinkedList:
         else:
             # If the list is now empty, reset the tail
             self.tail = self.head
-    
+
 
     def delete_tail(self):
-        # Delete the last real node in the list
+        """
+        Delete the last real node in the list.
+
+        Algorithm:
+        1. Check if the list is empty.
+        2. Store the current tail.
+        3. Move the tail pointer back one node.
+        4. Disconnect the old tail.
+
+        Time Complexity: O(1)
+        """
 
         # If the list is empty, nothing to delete
         if self.tail is self.head:
@@ -324,21 +278,39 @@ class LinkedList:
 
         # Disconnect the old tail
         self.tail.next = None
-    
+
 
     def print_list(self):
-        # Print all values in the linked list
+        """
+        Print all values in the linked list.
+
+        Algorithm:
+        Traverse from the first real node until reaching None.
+
+        Time Complexity: O(n)
+        """
 
         current = self.head.next
 
-        # Traverse the list until we reach None
         while current:
             print(current.data, end=" ")
             current = current.next
 
         print()
 
+
     def print_reverse(self):
+        """
+        Print the linked list in reverse order.
+
+        Algorithm:
+        1. Start at the tail.
+        2. Traverse backwards using prev pointers.
+        3. Stop when reaching the sentinel head.
+
+        Time Complexity: O(n)
+        """
+
         current = self.tail
 
         while current is not self.head:
