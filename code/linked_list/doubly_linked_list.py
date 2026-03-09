@@ -11,40 +11,119 @@ class LinkedList:
 
     Design Features:
     - Dummy (sentinel) head node
-    - Tail pointer for O(1) appends
+    - Dummy (sentinel) tail node
     - prev pointers for reverse traversal and O(1) deletion by reference
     """
 
     def __init__(self):
         # head is a dummy/sentinel node.
         # The first real node is stored at head.next.
-        # If head.next is None, the list is empty.
+        # If head.next is tail, the list is empty.
         self.head = Node()
-        self.tail = self.head
+
+        # tail is also a dummy/sentinel node
+        # This replaces the need for None at the end of the list.
+        # The last real node will always be stored at tail.prev.
+        self.tail = Node()
+
+        # Connect the two sentinel nodes
+        # head <-> tail represents an empty list
+        self.head.next = self.tail
+        self.tail.prev = self.head
 
 
-    def add_node(self, node):
+    def add_at_tail(self, node):
         """
         Append a node to the end of the list.
 
         Algorithm:
-        1. Disconnect the new node from any existing list.
-        2. Link the new node after the current tail.
-        3. Update both next and prev pointers.
-        4. Move the tail pointer forward.
+        1. The new node is inserted before the dummy tail node.
+        2. The previous last node is stored in tail.prev.
+        3. Connect the new node between (tail.prev) and (tail).
 
         Time Complexity: O(1)
         """
 
-        # node is the new tail, so it shouldn't point to another node
-        node.next = None
+        # The node before insertion
+        # head <-> A <-> B <-> tail
+        #                ^
+        #            prev_node
 
-        # Link the new node after the current tail
-        self.tail.next = node
-        node.prev = self.tail
+        prev_node = self.tail.prev
+        next_node = self.tail
 
-        # Update the tail pointer
-        self.tail = node
+        # Insert node between prev_node and next_node
+        node.next = next_node
+        node.prev = prev_node
+
+        next_node.prev = node
+        prev_node.next = node
+
+    
+    def add_at_head(self, node):
+        """
+        Insert a node at the beginning of the list.
+
+        Algorithm:
+        1. The new node is inserted after the dummy head node.
+        2. The first real node is stored in head.next.
+        3. Connect the new node between (head) and (head.next).
+
+        Time Complexity: O(1)
+        """
+
+        # Example before:
+        # head <-> A <-> B <-> tail
+        #
+        # After inserting X:
+        # head <-> X <-> A <-> B <-> tail
+
+        prev_node = self.head
+        next_node = self.head.next
+
+        node.next = next_node
+        node.prev = prev_node
+
+        next_node.prev = node
+        prev_node.next = node
+
+
+    def add_at_index(self, index, node):
+        """
+        Insert a node at the specified index.
+
+        Algorithm:
+        1. Traverse the list until reaching the node currently at position `index`.
+        2. Insert the new node BEFORE that node.
+        3. If index equals the list length, insertion occurs before the dummy tail.
+
+        Time Complexity: O(n)
+        """
+
+        if index < 0:
+            print("Index must be greater than -1")
+            return
+
+        current = self.head.next
+
+        # Traverse forward until reaching the desired index
+        for _ in range(index):
+            if current is self.tail:
+                print("Invalid index")
+                return
+            current = current.next
+
+        # current now points to the node currently at position "index"
+        # The new node will be inserted BEFORE current
+
+        prev_node = current.prev
+        next_node = current
+
+        node.next = next_node
+        node.prev = prev_node
+
+        next_node.prev = node
+        prev_node.next = node
 
 
     def get_node(self, index):
@@ -69,16 +148,16 @@ class LinkedList:
         # Move forward index times
         # Each iteration moves one node ahead
         for _ in range(index):
-            if current is None:
-                # If we hit None before reaching the index,
-                # the index is out of bounds
+            if current is self.tail:
+                # With a dummy tail, reaching the tail means
+                # we ran out of real nodes
                 print("Invalid index")
                 return
             current = current.next
 
-        # If current is None after the traversal,
-        # the index does not exist
-        if current is None:
+        if current is self.tail:
+            # NEW:
+            # If we land on the dummy tail, the index is invalid
             print("Invalid index")
             return
 
@@ -91,33 +170,16 @@ class LinkedList:
         Update the data stored in the node at the given index.
 
         Algorithm:
-        1. Traverse to the node at the given index.
+        1. Retrieve the node at the given index.
         2. Replace the data stored in that node.
 
         Time Complexity: O(n)
         """
 
-        if index < 0:
-            print("Index must be greater than -1")
-            return
+        node = self.get_node(index)
 
-        current = self.head.next
-
-        # Traverse to the desired index
-        for _ in range(index):
-            if current is None:
-                print("Invalid index")
-                return
-            current = current.next
-
-        # If current is None after the traversal,
-        # the index does not exist
-        if current is None:
-            print("Invalid index")
-            return
-
-        # Replace the data stored in that node
-        current.data = value
+        if node:
+            node.data = value
 
 
     def delete_node_index(self, index):
@@ -129,7 +191,6 @@ class LinkedList:
         2. Store references to the nodes before and after it.
         3. Update pointers so the previous node skips the deleted node.
         4. Fix the backward pointer of the next node.
-        5. If the deleted node was the tail, update the tail pointer.
 
         Time Complexity: O(n)
         """
@@ -142,19 +203,13 @@ class LinkedList:
         # (self.head is a dummy/sentinel node)
         current = self.head.next
 
-        # Traverse forward until we reach the node
-        # at the requested index
         for _ in range(index):
-            if current is None:
-                # If we reach None before finishing the traversal,
-                # the index is out of bounds
+            if current is self.tail:
                 print("Invalid index")
                 return
             current = current.next
 
-        # If current is None after the traversal,
-        # the index does not exist
-        if current is None:
+        if current is self.tail:
             print("Invalid index")
             return
 
@@ -163,26 +218,12 @@ class LinkedList:
         prev_node = current.prev
         next_node = current.next
 
-        if current is self.tail:
-            self.tail = prev_node
-
         # Skip over the node being deleted
-        # Example:
-        # [A] <-> [B] <-> [C]
-        #
-        # If deleting B:
-        # A.next should now point to C
-        # and C.prev should now point to A
-        #
-        # Result:
-        # [A] <-> [C]
         prev_node.next = next_node
 
-        # If there is a node after the deleted node,
-        # update its prev pointer so it points back
-        # to the correct previous node
-        if next_node:
-            next_node.prev = prev_node
+        # With a dummy tail, next_node always exists
+        # so we can safely update prev without checking for None
+        next_node.prev = prev_node
 
 
     def delete_node_reference(self, node):
@@ -200,23 +241,17 @@ class LinkedList:
 
         # The sentinel head is not a real node.
         # The first real node in the list is stored at head.next.
-        if node is self.head:
+        if node is self.head or node is self.tail:
             return
 
         prev_node = node.prev
         next_node = node.next
 
         # Skip over the node being deleted
-        # Example: A <-> B <-> C  ->  A <-> C
         prev_node.next = next_node
 
-        # Fix the backward pointer of the next node
-        if next_node:
-            next_node.prev = prev_node
-        else:
-            # If the deleted node was the tail,
-            # move the tail pointer back
-            self.tail = prev_node
+        # With a dummy tail, next_node is guaranteed to exist
+        next_node.prev = prev_node
 
 
     def delete_head(self):
@@ -234,22 +269,13 @@ class LinkedList:
         """
 
         # If the list is empty, nothing to delete
-        if self.head.next is None:
+        if self.head.next is self.tail:
             return
 
-        # Store the first real node
         first = self.head.next
 
-        # Skip over the node being deleted
-        # Example: head <-> A <-> B  ->  head <-> B
         self.head.next = first.next
-
-        # Fix the backward pointer of the new first node
-        if first.next:
-            first.next.prev = self.head
-        else:
-            # If the list is now empty, reset the tail
-            self.tail = self.head
+        first.next.prev = self.head
 
 
     def delete_tail(self):
@@ -266,18 +292,13 @@ class LinkedList:
         """
 
         # If the list is empty, nothing to delete
-        if self.tail is self.head:
+        if self.tail.prev is self.head:
             return
 
-        # Store the current tail node
-        last = self.tail
+        last = self.tail.prev
 
-        # Move the tail pointer back one node
-        # Example: head <-> A <-> B <-> C  ->  head <-> A <-> B
-        self.tail = last.prev
-
-        # Disconnect the old tail
-        self.tail.next = None
+        self.tail.prev = last.prev
+        last.prev.next = self.tail
 
 
     def print_list(self):
@@ -285,14 +306,15 @@ class LinkedList:
         Print all values in the linked list.
 
         Algorithm:
-        Traverse from the first real node until reaching None.
+        Traverse from the first real node until reaching the dummy tail.
 
         Time Complexity: O(n)
         """
 
         current = self.head.next
 
-        while current:
+        # Stop when we reach the dummy tail
+        while current is not self.tail:
             print(current.data, end=" ")
             current = current.next
 
@@ -311,7 +333,8 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        current = self.tail
+        # Start from the last real node
+        current = self.tail.prev
 
         while current is not self.head:
             print(current.data, end=" ")
@@ -321,44 +344,113 @@ class LinkedList:
 
 
 
+# ----------------------------------------------------------
+# Example usage demonstrating ALL LinkedList operations
+# ----------------------------------------------------------
+
 linked_list = LinkedList()
 
-# Create and add nodes to the linked list
-n1 = Node(84)
-linked_list.add_node(n1)
-n2 = Node(-43)
-linked_list.add_node(n2)
-n3 = Node(28)
-linked_list.add_node(n3)
-print("Linked List:", end=" ")
+print("Initial list:")
 linked_list.print_list()
 
-# Get a node by index
-copy_n2 = linked_list.get_node(2)
-print("Data from node 3:", copy_n2.data)
-invalid = linked_list.get_node(-1)
-invalid = linked_list.get_node(100)
 
-# Set a node to a new value
-print("After changing the second node:", end=" ")
-linked_list.set_node(1, 36)
+# ----------------------------------------------------------
+# add_at_head
+# ----------------------------------------------------------
+print("\nAdding nodes at head:")
+linked_list.add_at_head(Node(10))
+linked_list.add_at_head(Node(20))
+linked_list.add_at_head(Node(30))
+
+# List should now be: 30 20 10
 linked_list.print_list()
 
-# Delete a node by index
-linked_list.delete_node_index(0)
-print("After deleting the first node:", end=" ")
-linked_list.print_list()
-linked_list.delete_node_index(-1)
-linked_list.delete_node_index(100)
 
-# Delete a node by reference
-n4 = Node(101)
-linked_list.add_node(n4)
-print("After adding Node(101):", end=" ")
-linked_list.print_list()
-print("After deleting Node(101):", end=" ")
-linked_list.delete_node_reference(n4)
+# ----------------------------------------------------------
+# add_at_tail
+# ----------------------------------------------------------
+print("\nAdding nodes at tail:")
+linked_list.add_at_tail(Node(40))
+linked_list.add_at_tail(Node(50))
+
+# List should now be: 30 20 10 40 50
 linked_list.print_list()
 
-print("Reversed list:", end=" ")
+
+# ----------------------------------------------------------
+# add_at_index
+# ----------------------------------------------------------
+print("\nInsert at index 2:")
+linked_list.add_at_index(2, Node(99))
+
+# List should now be: 30 20 99 10 40 50
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# get_node
+# ----------------------------------------------------------
+print("\nGet node at index 3:")
+node = linked_list.get_node(3)
+
+if node:
+    print("Value:", node.data)
+
+
+# ----------------------------------------------------------
+# set_node
+# ----------------------------------------------------------
+print("\nUpdate value at index 1:")
+linked_list.set_node(1, 111)
+
+# List should now be: 30 111 99 10 40 50
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# delete_node_index
+# ----------------------------------------------------------
+print("\nDelete node at index 2:")
+linked_list.delete_node_index(2)
+
+# List should now be: 30 111 10 40 50
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# delete_node_reference
+# ----------------------------------------------------------
+print("\nDelete node by reference:")
+
+node_to_delete = linked_list.get_node(3)
+linked_list.delete_node_reference(node_to_delete)
+
+# List should now be: 30 111 10 50
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# delete_head
+# ----------------------------------------------------------
+print("\nDelete head:")
+linked_list.delete_head()
+
+# List should now be: 111 10 50
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# delete_tail
+# ----------------------------------------------------------
+print("\nDelete tail:")
+linked_list.delete_tail()
+
+# List should now be: 111 10
+linked_list.print_list()
+
+
+# ----------------------------------------------------------
+# print_reverse
+# ----------------------------------------------------------
+print("\nReverse order:")
 linked_list.print_reverse()
