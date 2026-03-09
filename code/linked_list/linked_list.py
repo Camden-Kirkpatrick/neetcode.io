@@ -1,38 +1,37 @@
 class Node:
-    def __init__(self, data, next=None):
+    def __init__(self, data=0, next=None):
         self.data = data
         self.next = next
 
+
 class LinkedList:
-    def __init__(self, head):
-        # head points to the first node in the list
-        # If head is None, the list is empty
-        self.head = head
+    def __init__(self):
+        # head is a dummy/sentinel node.
+        # The first real node is stored at head.next.
+        # If head.next is None, the list is empty.
+        self.head = Node()
+        self.tail = self.head
 
     def add_node(self, node):
         # Add a node to the end of the linked list
 
-        current = self.head
+        # node is the new tail, so it shouldn't point to another node
+        node.next = None
 
-        # Traverse the list until we reach the last node
-        while current:
-            if not current.next:
-                # If the current node is the last node,
-                # link it to the new node
-                current.next = node
-                break
-            else:
-                # Otherwise move to the next node
-                current = current.next
-    
+        # Link the new node after the current tail
+        self.tail.next = node
+
+        # Update the tail pointer
+        self.tail = node
+
     def get_node(self, index):
         # Return the node at the given index
 
         if index < 0:
             print("Index must be greater than -1")
             return
-        
-        current = self.head
+
+        current = self.head.next
 
         # Move forward index times
         # Each iteration moves one node ahead
@@ -43,7 +42,13 @@ class LinkedList:
                 print("Invalid index")
                 return
             current = current.next
-        
+
+        # If current is None after the traversal,
+        # the index does not exist
+        if current is None:
+            print("Invalid index")
+            return
+
         # current now points to the node at the requested index
         return current
 
@@ -53,8 +58,8 @@ class LinkedList:
         if index < 0:
             print("Index must be greater than -1")
             return
-        
-        current = self.head
+
+        current = self.head.next
 
         # Traverse to the desired index
         for _ in range(index):
@@ -62,6 +67,12 @@ class LinkedList:
                 print("Invalid index")
                 return
             current = current.next
+
+        # If current is None after the traversal,
+        # the index does not exist
+        if current is None:
+            print("Invalid index")
+            return
 
         # Replace the data stored in that node
         current.data = value
@@ -73,46 +84,41 @@ class LinkedList:
             print("Index must be greater than -1")
             return
 
-        # If the list is empty, nothing to delete
-        if not self.head:
-            print("Linked list is empty")
-            return
+        # Start at the dummy head so prev always points
+        # to the node before the one we want to delete
+        prev = self.head
 
-        # Special case: deleting the head node
-        if index == 0:
-            # Move the head pointer to the next node
-            self.head = self.head.next
-            return
-
-        current = self.head
-
-        # Traverse to the node BEFORE the one we want to delete
-        for _ in range(index - 1):
-            current = current.next
-
-            if current is None:
-                # Index is out of bounds
+        # Move prev to the node before the target node
+        for _ in range(index):
+            if prev.next is None:
                 print("Invalid index")
                 return
+            prev = prev.next
 
-        # If current.next is None, the index does not exist
-        if current.next is None:
+        # If there is no node to delete, the index is invalid
+        if prev.next is None:
             print("Invalid index")
             return
-        
+
+        # Store the node being deleted
+        deleted = prev.next
+
         # Skip over the node being deleted
         # Example:
-        # current -> [A] -> [B] -> [C]
+        # head -> A -> B -> C
+        #
         # If deleting B:
-        # current.next = current.next.next
-        # Result:
-        # current -> [A] -> [C]
-        current.next = current.next.next
-    
+        # A.next should now point to C
+        prev.next = deleted.next
+
+        # If we deleted the tail, move tail back to prev
+        if deleted is self.tail:
+            self.tail = prev
+
     def print_list(self):
         # Print all values in the linked list
 
-        current = self.head
+        current = self.head.next
 
         # Traverse the list until we reach None
         while current:
@@ -123,13 +129,15 @@ class LinkedList:
 
 
 
-head = Node(50)
-linked_list = LinkedList(head)
+linked_list = LinkedList()
 
-n1 = Node(84)
+n1 = Node(50)
 linked_list.add_node(n1)
-n2 = Node(-43)
+n2 = Node(84)
 linked_list.add_node(n2)
+n3 = Node(-43)
+linked_list.add_node(n3)
+
 print("Linked List:", end=" ")
 linked_list.print_list()
 

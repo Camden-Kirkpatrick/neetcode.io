@@ -149,7 +149,10 @@ class LinkedList:
 
 
     def add_node(self, node):
-        # Append a node to the end of the list
+        # Add a node to the end of the linked list
+
+        # node is the new tail, so it shouldn't point to another node
+        node.next = None
 
         # Link the new node after the current tail
         self.tail.next = node

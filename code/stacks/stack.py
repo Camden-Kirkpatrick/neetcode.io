@@ -16,7 +16,7 @@ class Stack:
         Initialize the stack.
 
         Algorithm:
-        1. Create an underlying DynamicArray with the given initial capacity.
+        Create an underlying DynamicArray with the given initial capacity.
         """
         self.data = DynamicArray(capacity)
 
@@ -71,7 +71,6 @@ class Stack:
         Time Complexity: O(1)
         """
         if self.data.is_empty():
-            print("Can't peek from empty stack")
             return None
         
         return self.data.last()
@@ -94,10 +93,18 @@ s.push(3)
 s.push(8)
 s.push(0)
 
-print(s.peek())
+print(f"len(stack):", len(s))
+print(f"stack.size():", s.size())
+
+print("top:", s.peek())
 s.pop()
-print(s.peek())
+print("top:", s.peek())
 s.pop()
-print(s.peek())
+print("top:", s.peek())
 s.pop()
-print(s.peek())
+
+value = s.peek()
+if (value is None):
+    print("Can't peek from empty stack")
+else:
+    print("top:", s.peek())
