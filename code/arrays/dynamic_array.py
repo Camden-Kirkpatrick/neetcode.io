@@ -1,3 +1,5 @@
+# improved error handling in static_array.py
+
 class DynamicArray:
     """
     A resizable (dynamic) array implementation.
@@ -20,6 +22,9 @@ class DynamicArray:
         3. Preallocate a list of size `capacity`.
         4. Fill all slots with None to represent unused memory.
         """
+        if capacity < 1:
+            raise ValueError("Capacity must be at least 1")
+
         self.capacity = capacity
         self.length = 0
         self.arr = [None] * capacity
@@ -86,8 +91,7 @@ class DynamicArray:
         Time Complexity: O(1)
         """
         if index < 0 or index >= self.length:
-            print("Invalid index")
-            return None
+            raise IndexError("Invalid index")
         
         return self.arr[index]
     
@@ -102,8 +106,7 @@ class DynamicArray:
         Time Complexity: O(1)
         """
         if index < 0 or index >= self.length:
-            print("Invalid index")
-            return
+            raise IndexError("Invalid index")
         
         self.arr[index] = value
 
@@ -162,6 +165,9 @@ class DynamicArray:
         if i is None:
             i = self.length
 
+        if i < 0 or i > self.length:
+            raise IndexError("Invalid index")
+
         if self.is_full():
             self.resize()
 
@@ -188,8 +194,7 @@ class DynamicArray:
         Time Complexity: O(n)
         """
         if index < 0 or index > self.length:
-            print("Invalid index")
-            return
+            raise IndexError("Invalid index")
 
         if self.is_full():
             self.resize()
@@ -246,18 +251,17 @@ class DynamicArray:
 
         Time Complexity: O(n)
         """
-        if index < 0 or index >= self.length:
-            print("Invalid index")
-            return
-
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Can't delete from empty array")
+
+        if index < 0 or index >= self.length:
+            raise IndexError("Invalid index")
+
+        value = self.arr[index]
 
         for i in range(index, self.length - 1):
             self.arr[i] = self.arr[i + 1]
 
-        value = self.arr[self.length - 1]
         self.length -= 1
         self.arr[self.length] = None
         return value
@@ -277,13 +281,13 @@ class DynamicArray:
         Time Complexity: O(n)
         """
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Can't delete from empty array")
+
+        value = self.arr[0]
 
         for i in range(self.length - 1):
             self.arr[i] = self.arr[i + 1]
 
-        value = self.arr[self.length - 1]
         self.length -= 1
         self.arr[self.length] = None
         return value
@@ -302,10 +306,104 @@ class DynamicArray:
         Time Complexity: O(1)
         """
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Can't delete from empty array")
 
         value = self.arr[self.length - 1]
         self.length -= 1
         self.arr[self.length] = None
         return value
+
+
+if __name__ == "__main__":
+    # Basic creation + automatic resizing
+    arr = DynamicArray(2)
+
+    print("Initial size:", arr.size())
+    print("Initial capacity:", arr.get_capacity())
+    arr.print_array()
+    print()
+
+    arr.insert_end(10)
+    arr.insert_end(20)
+
+    print("After inserting 10 and 20:")
+    arr.print_array()
+    print("Size:", arr.size())
+    print("Capacity:", arr.get_capacity())
+    print()
+
+    arr.insert_end(30)
+
+    print("After inserting 30 (resize should have happened):")
+    arr.print_array()
+    print("Size:", arr.size())
+    print("Capacity:", arr.get_capacity())
+    print()
+
+    arr.insert_at(1, 99)
+    print("After inserting 99 at index 1:")
+    arr.print_array()
+    print()
+
+    arr.insert_start(-5)
+    print("After inserting -5 at the start:")
+    arr.print_array()
+    print()
+
+    print("Element at index 2:", arr.get(2))
+    print("Last element:", arr.last())
+    print()
+
+    arr.set(2, 777)
+    print("After setting index 2 to 777:")
+    arr.print_array()
+    print()
+
+    removed = arr.delete_at(1)
+    print("Removed from index 1:", removed)
+    arr.print_array()
+    print()
+
+    removed = arr.delete_start()
+    print("Removed from start:", removed)
+    arr.print_array()
+    print()
+
+    removed = arr.delete_end()
+    print("Removed from end:", removed)
+    arr.print_array()
+    print()
+
+    print("===== Error handling examples =====")
+
+    try:
+        print(arr.get(100))
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        arr.set(-1, 500)
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        arr.insert_at(100, 42)
+    except IndexError as e:
+        print("Error:", e)
+
+    empty = DynamicArray()
+
+    try:
+        empty.delete_end()
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        empty.delete_start()
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        empty.delete_at(0)
+    except IndexError as e:
+        print("Error:", e)
