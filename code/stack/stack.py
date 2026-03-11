@@ -20,6 +20,7 @@ class Stack:
         """
         self.data = DynamicArray(capacity)
 
+
     def size(self):
         """
         Return the number of elements in the stack.
@@ -31,12 +32,14 @@ class Stack:
         """
         return self.data.size()
     
+
     def __len__(self):
         """
         Equivalent to size().
         Allow "len()" syntax.
         """
         return self.data.size()
+
 
     def is_empty(self) -> bool:
         """
@@ -49,6 +52,7 @@ class Stack:
         """
         return self.data.is_empty()
     
+
     def push(self, value) -> None:
         """
         Push a value onto the top of the stack.
@@ -59,6 +63,7 @@ class Stack:
         Time Complexity: O(1) amortized
         """
         self.data.insert_end(value)
+
 
     def peek(self):
         """
@@ -71,10 +76,11 @@ class Stack:
         Time Complexity: O(1)
         """
         if self.data.is_empty():
-            return None
+            raise IndexError("Can't peek from empty stack")
         
         return self.data.last()
     
+
     def pop(self):
         """
         Remove and return the top element.
@@ -89,23 +95,75 @@ class Stack:
 
 
 if __name__ == "__main__":
+    print("===== BASIC STACK OPERATIONS =====")
     s = Stack()
+
+    print("Initial size:", s.size())
+    print("Is empty:", s.is_empty())
+    print()
+
     s.push(3)
     s.push(8)
     s.push(0)
 
-    print(f"len(stack):", len(s))
-    print(f"stack.size():", s.size())
+    print("After pushing 3, 8, and 0:")
+    print("len(stack):", len(s))
+    print("stack.size():", s.size())
+    print("top:", s.peek())
+    print()
 
-    print("top:", s.peek())
-    s.pop()
-    print("top:", s.peek())
-    s.pop()
-    print("top:", s.peek())
-    s.pop()
+    removed = s.pop()
+    print("Popped:", removed)
+    print("New top:", s.peek())
+    print()
 
-    value = s.peek()
-    if (value is None):
-        print("Can't peek from empty stack")
-    else:
-        print("top:", s.peek())
+    removed = s.pop()
+    print("Popped:", removed)
+    print("New top:", s.peek())
+    print()
+
+    removed = s.pop()
+    print("Popped:", removed)
+    print("Is empty:", s.is_empty())
+    print()
+
+    print("===== ERROR HANDLING EXAMPLES =====")
+
+    try:
+        print("Trying to peek from empty stack:")
+        print(s.peek())
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        print("Trying to pop from empty stack:")
+        print(s.pop())
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        print("Trying to create a stack with invalid capacity:")
+        bad_stack = Stack(0)
+    except ValueError as e:
+        print("Error:", e)
+
+    print()
+    print("===== RESIZE TEST =====")
+
+    s2 = Stack(2)
+    s2.push(10)
+    s2.push(20)
+    s2.push(30)
+
+    print("After pushing 10, 20, and 30 into Stack(2):")
+    print("len(stack):", len(s2))
+    print("top:", s2.peek())
+
+    print("Popped:", s2.pop())
+    print("Popped:", s2.pop())
+    print("Popped:", s2.pop())
+
+    try:
+        s2.pop()
+    except IndexError as e:
+        print("Error:", e)
