@@ -12,7 +12,10 @@ def get_concatenation(nums: list[int]) -> list[int]:
     
     return new_nums
 
-nums = [1, 2, 3, 4]
-new_nums = get_concatenation(nums)
-# [1, 2, 3, 4, 1, 2, 3, 4]
-print(new_nums)
+
+
+if __name__ == "__main__":
+    nums = [1, 2, 3, 4]
+    new_nums = get_concatenation(nums)
+    # [1, 2, 3, 4, 1, 2, 3, 4]
+    print(new_nums)

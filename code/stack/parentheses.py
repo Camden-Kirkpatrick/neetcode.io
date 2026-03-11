@@ -61,17 +61,18 @@ def is_valid(s: str) -> bool:
     return True
 
 
-s = "[]"
-print(is_valid(s), '\n')
+if __name__ == "__main__":
+    s = "[]"
+    print(is_valid(s), '\n')
 
-s = "{"
-print(is_valid(s), '\n')
+    s = "{"
+    print(is_valid(s), '\n')
 
-s = "]"
-print(is_valid(s), '\n')
+    s = "]"
+    print(is_valid(s), '\n')
 
-s = "()}"
-print(is_valid(s), '\n')
+    s = "()}"
+    print(is_valid(s), '\n')
 
-s = "[{()}]"
-print(is_valid(s), '\n')
+    s = "[{()}]"
+    print(is_valid(s), '\n')

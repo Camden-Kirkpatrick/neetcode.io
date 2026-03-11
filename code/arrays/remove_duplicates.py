@@ -117,8 +117,10 @@ def remove_duplicates_best(nums):
     return w
 
 
-nums = [1, 2, 2, 3, 4, 5, 6, 7, 7]
-num_unique_nums = remove_duplicates_best(nums)
-print(num_unique_nums)
-# IndexError occurs
-# print(remove_duplicates_incorrect(nums))
+
+if __name__ == "__main__":
+    nums = [1, 2, 2, 3, 4, 5, 6, 7, 7]
+    num_unique_nums = remove_duplicates_best(nums)
+    print(num_unique_nums)
+    # IndexError occurs
+    # print(remove_duplicates_incorrect(nums))

@@ -65,13 +65,17 @@ class MinStack:
     def get_min(self) -> int:
         # The current minimum is always the top of min_stack
         return self.min_stack[-1]
+
+
+
+if __name__ == "__main__":
+    s = MinStack()
+    s.push(24)
+    s.push(45)
+    s.push(6)
     
-s = MinStack()
-s.push(24)
-s.push(45)
-s.push(6)
-print("top:", s.top())
-print("minimum:", s.get_min())
-s.pop()
-print("top:", s.top())
-print("minimum:", s.get_min())
+    print("top:", s.top())
+    print("minimum:", s.get_min())
+    s.pop()
+    print("top:", s.top())
+    print("minimum:", s.get_min())

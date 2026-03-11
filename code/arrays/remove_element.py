@@ -72,6 +72,8 @@ def remove_element_best(nums: list[int], val: int) -> int:
     return w
 
 
-val = 10
-nums = [10, 23, -87, 10, 38, 56, 10]
-print(remove_element(nums, val))
+
+if __name__ == "__main__":
+    val = 10
+    nums = [10, 23, -87, 10, 38, 56, 10]
+    print(remove_element(nums, val))

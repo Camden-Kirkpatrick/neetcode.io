@@ -32,7 +32,7 @@ class LinkedList:
         self.tail.prev = self.head
 
 
-    def add_at_tail(self, node):
+    def add_at_tail(self, data):
         """
         Append a node to the end of the list.
 
@@ -43,6 +43,8 @@ class LinkedList:
 
         Time Complexity: O(1)
         """
+
+        node = Node(data)
 
         # The node before insertion
         # head <-> A <-> B <-> tail
@@ -60,7 +62,7 @@ class LinkedList:
         prev_node.next = node
 
     
-    def add_at_head(self, node):
+    def add_at_head(self, data):
         """
         Insert a node at the beginning of the list.
 
@@ -78,6 +80,8 @@ class LinkedList:
         # After inserting X:
         # head <-> X <-> A <-> B <-> tail
 
+        node = Node(data)
+
         prev_node = self.head
         next_node = self.head.next
 
@@ -88,7 +92,7 @@ class LinkedList:
         prev_node.next = node
 
 
-    def add_at_index(self, index, node):
+    def add_at_index(self, index, data):
         """
         Insert a node at the specified index.
 
@@ -101,15 +105,15 @@ class LinkedList:
         """
 
         if index < 0:
-            print("Index must be greater than -1")
             return
+        
+        node = Node(data)
 
         current = self.head.next
 
         # Traverse forward until reaching the desired index
         for _ in range(index):
             if current is self.tail:
-                print("Invalid index")
                 return
             current = current.next
 
@@ -140,8 +144,7 @@ class LinkedList:
         """
 
         if index < 0:
-            print("Index must be greater than -1")
-            return
+            return None
 
         current = self.head.next
 
@@ -151,21 +154,17 @@ class LinkedList:
             if current is self.tail:
                 # With a dummy tail, reaching the tail means
                 # we ran out of real nodes
-                print("Invalid index")
-                return
+                return None
             current = current.next
 
         if current is self.tail:
-            # NEW:
-            # If we land on the dummy tail, the index is invalid
-            print("Invalid index")
-            return
+            return None
 
         # current now points to the node at the requested index
         return current
 
 
-    def set_node(self, index, value):
+    def set_node(self, index, data):
         """
         Update the data stored in the node at the given index.
 
@@ -179,7 +178,7 @@ class LinkedList:
         node = self.get_node(index)
 
         if node:
-            node.data = value
+            node.data = data
 
 
     def delete_node_index(self, index):
@@ -196,7 +195,6 @@ class LinkedList:
         """
 
         if index < 0:
-            print("Index must be greater than -1")
             return
 
         # Start at the first real node
@@ -205,12 +203,10 @@ class LinkedList:
 
         for _ in range(index):
             if current is self.tail:
-                print("Invalid index")
                 return
             current = current.next
 
         if current is self.tail:
-            print("Invalid index")
             return
 
         # Store references to the nodes before and after
@@ -347,110 +343,110 @@ class LinkedList:
 # ----------------------------------------------------------
 # Example usage demonstrating ALL LinkedList operations
 # ----------------------------------------------------------
+if __name__ == "__main__":
+    linked_list = LinkedList()
 
-linked_list = LinkedList()
-
-print("Initial list:")
-linked_list.print_list()
-
-
-# ----------------------------------------------------------
-# add_at_head
-# ----------------------------------------------------------
-print("\nAdding nodes at head:")
-linked_list.add_at_head(Node(10))
-linked_list.add_at_head(Node(20))
-linked_list.add_at_head(Node(30))
-
-# List should now be: 30 20 10
-linked_list.print_list()
+    print("Initial list:")
+    linked_list.print_list()
 
 
-# ----------------------------------------------------------
-# add_at_tail
-# ----------------------------------------------------------
-print("\nAdding nodes at tail:")
-linked_list.add_at_tail(Node(40))
-linked_list.add_at_tail(Node(50))
+    # ----------------------------------------------------------
+    # add_at_head
+    # ----------------------------------------------------------
+    print("\nAdding nodes at head:")
+    linked_list.add_at_head(Node(10))
+    linked_list.add_at_head(Node(20))
+    linked_list.add_at_head(Node(30))
 
-# List should now be: 30 20 10 40 50
-linked_list.print_list()
-
-
-# ----------------------------------------------------------
-# add_at_index
-# ----------------------------------------------------------
-print("\nInsert at index 2:")
-linked_list.add_at_index(2, Node(99))
-
-# List should now be: 30 20 99 10 40 50
-linked_list.print_list()
+    # List should now be: 30 20 10
+    linked_list.print_list()
 
 
-# ----------------------------------------------------------
-# get_node
-# ----------------------------------------------------------
-print("\nGet node at index 3:")
-node = linked_list.get_node(3)
+    # ----------------------------------------------------------
+    # add_at_tail
+    # ----------------------------------------------------------
+    print("\nAdding nodes at tail:")
+    linked_list.add_at_tail(Node(40))
+    linked_list.add_at_tail(Node(50))
 
-if node:
-    print("Value:", node.data)
-
-
-# ----------------------------------------------------------
-# set_node
-# ----------------------------------------------------------
-print("\nUpdate value at index 1:")
-linked_list.set_node(1, 111)
-
-# List should now be: 30 111 99 10 40 50
-linked_list.print_list()
+    # List should now be: 30 20 10 40 50
+    linked_list.print_list()
 
 
-# ----------------------------------------------------------
-# delete_node_index
-# ----------------------------------------------------------
-print("\nDelete node at index 2:")
-linked_list.delete_node_index(2)
+    # ----------------------------------------------------------
+    # add_at_index
+    # ----------------------------------------------------------
+    print("\nInsert at index 2:")
+    linked_list.add_at_index(2, Node(99))
 
-# List should now be: 30 111 10 40 50
-linked_list.print_list()
-
-
-# ----------------------------------------------------------
-# delete_node_reference
-# ----------------------------------------------------------
-print("\nDelete node by reference:")
-
-node_to_delete = linked_list.get_node(3)
-linked_list.delete_node_reference(node_to_delete)
-
-# List should now be: 30 111 10 50
-linked_list.print_list()
+    # List should now be: 30 20 99 10 40 50
+    linked_list.print_list()
 
 
-# ----------------------------------------------------------
-# delete_head
-# ----------------------------------------------------------
-print("\nDelete head:")
-linked_list.delete_head()
+    # ----------------------------------------------------------
+    # get_node
+    # ----------------------------------------------------------
+    print("\nGet node at index 3:")
+    node = linked_list.get_node(3)
 
-# List should now be: 111 10 50
-linked_list.print_list()
-
-
-# ----------------------------------------------------------
-# delete_tail
-# ----------------------------------------------------------
-print("\nDelete tail:")
-linked_list.delete_tail()
-
-# List should now be: 111 10
-linked_list.print_list()
+    if node:
+        print("Value:", node.data)
 
 
-# ----------------------------------------------------------
-# print_reverse
-# ----------------------------------------------------------
-print("\nReverse order:")
-linked_list.print_reverse()
+    # ----------------------------------------------------------
+    # set_node
+    # ----------------------------------------------------------
+    print("\nUpdate value at index 1:")
+    linked_list.set_node(1, 111)
+
+    # List should now be: 30 111 99 10 40 50
+    linked_list.print_list()
+
+
+    # ----------------------------------------------------------
+    # delete_node_index
+    # ----------------------------------------------------------
+    print("\nDelete node at index 2:")
+    linked_list.delete_node_index(2)
+
+    # List should now be: 30 111 10 40 50
+    linked_list.print_list()
+
+
+    # ----------------------------------------------------------
+    # delete_node_reference
+    # ----------------------------------------------------------
+    print("\nDelete node by reference:")
+
+    node_to_delete = linked_list.get_node(3)
+    linked_list.delete_node_reference(node_to_delete)
+
+    # List should now be: 30 111 10 50
+    linked_list.print_list()
+
+
+    # ----------------------------------------------------------
+    # delete_head
+    # ----------------------------------------------------------
+    print("\nDelete head:")
+    linked_list.delete_head()
+
+    # List should now be: 111 10 50
+    linked_list.print_list()
+
+
+    # ----------------------------------------------------------
+    # delete_tail
+    # ----------------------------------------------------------
+    print("\nDelete tail:")
+    linked_list.delete_tail()
+
+    # List should now be: 111 10
+    linked_list.print_list()
+
+
+    # ----------------------------------------------------------
+    # print_reverse
+    # ----------------------------------------------------------
+    print("\nReverse order:")
+    linked_list.print_reverse()

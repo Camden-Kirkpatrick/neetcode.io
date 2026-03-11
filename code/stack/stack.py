@@ -1,4 +1,4 @@
-# Go to "\code", then run: python -m stacks.stack
+# Go to "\code", then run: python -m stack.stack
 
 from arrays.dynamic_array import DynamicArray
 
@@ -85,26 +85,27 @@ class Stack:
         Time Complexity: O(1)
         """
         return self.data.delete_end()
-    
 
 
-s = Stack()
-s.push(3)
-s.push(8)
-s.push(0)
 
-print(f"len(stack):", len(s))
-print(f"stack.size():", s.size())
+if __name__ == "__main__":
+    s = Stack()
+    s.push(3)
+    s.push(8)
+    s.push(0)
 
-print("top:", s.peek())
-s.pop()
-print("top:", s.peek())
-s.pop()
-print("top:", s.peek())
-s.pop()
+    print(f"len(stack):", len(s))
+    print(f"stack.size():", s.size())
 
-value = s.peek()
-if (value is None):
-    print("Can't peek from empty stack")
-else:
     print("top:", s.peek())
+    s.pop()
+    print("top:", s.peek())
+    s.pop()
+    print("top:", s.peek())
+    s.pop()
+
+    value = s.peek()
+    if (value is None):
+        print("Can't peek from empty stack")
+    else:
+        print("top:", s.peek())

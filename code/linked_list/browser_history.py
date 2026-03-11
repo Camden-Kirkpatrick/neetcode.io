@@ -168,16 +168,17 @@ class BrowserHistory(object):
 
 
 
-b = BrowserHistory("home")
-b.visit("yt.com")
-b.visit("test.com")
-b.visit("tech.com")
+if __name__ == "__main__":
+    b = BrowserHistory("home")
+    b.visit("yt.com")
+    b.visit("test.com")
+    b.visit("tech.com")
 
-print("current:", b.current.data)
-back_2 = b.back(2)
-print("After going back 2, current is now:", back_2)
-forward_1 = b.forward(1)
-print("After going forward 1, current is now:", forward_1)
+    print("current:", b.current.data)
+    back_2 = b.back(2)
+    print("After going back 2, current is now:", back_2)
+    forward_1 = b.forward(1)
+    print("After going forward 1, current is now:", forward_1)
 
 
 

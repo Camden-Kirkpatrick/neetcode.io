@@ -118,26 +118,27 @@ def print_list(list):
 
 
 
-l0 = Node(1)
-l0n1 = Node(4)
-l0n2 = Node(5)
-l0n3 = Node(13)
+if __name__ == "__main__":
+    l0 = Node(1)
+    l0n1 = Node(4)
+    l0n2 = Node(5)
+    l0n3 = Node(13)
 
-l1 = Node(1)
-l1n1 = Node(3)
-l1n2 = Node(7)
-l1n3 = Node(10)
-l1n4 = Node(19)
+    l1 = Node(1)
+    l1n1 = Node(3)
+    l1n2 = Node(7)
+    l1n3 = Node(10)
+    l1n4 = Node(19)
 
 
-l0.next = l0n1
-l0n1.next = l0n2
-l0n2.next = l0n3
+    l0.next = l0n1
+    l0n1.next = l0n2
+    l0n2.next = l0n3
 
-l1.next = l1n1
-l1n1.next = l1n2
-l1n2.next = l1n3
-l1n3.next = l1n4
+    l1.next = l1n1
+    l1n1.next = l1n2
+    l1n2.next = l1n3
+    l1n3.next = l1n4
 
-list3 = merge_linked_lists(l0, l1)
-print_list(list3)
+    list3 = merge_linked_lists(l0, l1)
+    print_list(list3)

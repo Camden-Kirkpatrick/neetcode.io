@@ -122,17 +122,18 @@ class LinkedList:
 
 
 
-head = Node(50)
-linked_list = LinkedList(head)
+if __name__ == "__main__":
+    head = Node(50)
+    linked_list = LinkedList(head)
 
-n1 = Node(84)
-linked_list.add_node(n1)
-n2 = Node(-43)
-linked_list.add_node(n2)
-n3 = Node(9)
-linked_list.add_node(n3)
-print("Linked List:", end=" ")
-linked_list.print_list()
+    n1 = Node(84)
+    linked_list.add_node(n1)
+    n2 = Node(-43)
+    linked_list.add_node(n2)
+    n3 = Node(9)
+    linked_list.add_node(n3)
+    print("Linked List:", end=" ")
+    linked_list.print_list()
 
-linked_list.reverse_list()
-linked_list.print_list()
+    linked_list.reverse_list()
+    linked_list.print_list()
