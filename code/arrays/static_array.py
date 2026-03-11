@@ -23,7 +23,6 @@ class MyArray:
         self.capacity = capacity
         self.length = 0
         self.arr = [None] * capacity
-        print("array created")
 
     def is_full(self):
         """
@@ -63,20 +62,14 @@ class MyArray:
             i = self.length
 
         if self.is_full():
-            print("Can't add any more elements to the array")
-            return
+            raise OverflowError("Array is full")
 
         self.arr[i] = value
-        print(value, "was added to the array")
         self.length += 1
 
     def print_array(self):
         """
         Print the logical contents of the array.
-
-        Algorithm:
-        Iterate from index 0 up to logical length,
-        ignoring unused capacity slots.
 
         Time Complexity: O(n)
         """
@@ -100,12 +93,10 @@ class MyArray:
         Time Complexity: O(n)
         """
         if index < 0 or index > self.length:
-            print("Invalid index")
-            return
+            raise IndexError("Index out of range")
 
         if self.is_full():
-            print("Can't add any more elements to the array")
-            return
+            raise OverflowError("Array is full")
 
         for i in range(self.length - 1, index - 1, -1):
             self.arr[i + 1] = self.arr[i]
@@ -125,8 +116,7 @@ class MyArray:
         Time Complexity: O(n)
         """
         if self.is_full():
-            print("Can't add any more elements to the array")
-            return
+            raise OverflowError("Array is full")
 
         for i in range(self.length - 1, -1, -1):
             self.arr[i + 1] = self.arr[i]
@@ -159,12 +149,10 @@ class MyArray:
         Time Complexity: O(n)
         """
         if index < 0 or index >= self.length:
-            print("Invalid index")
-            return
+            raise IndexError("Index out of range")
 
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Array is empty")
 
         for i in range(index, self.length - 1):
             self.arr[i] = self.arr[i + 1]
@@ -185,8 +173,7 @@ class MyArray:
         Time Complexity: O(n)
         """
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Array is empty")
 
         for i in range(0, self.length - 1):
             self.arr[i] = self.arr[i + 1]
@@ -206,8 +193,7 @@ class MyArray:
         Time Complexity: O(1)
         """
         if self.is_empty():
-            print("Can't delete from empty array")
-            return
+            raise IndexError("Array is empty")
 
         self.length -= 1
         self.arr[self.length] = None
@@ -215,17 +201,29 @@ class MyArray:
 
 
 if __name__ == "__main__":
+
+    print("===== BASIC ARRAY =====")
+
     arr1 = MyArray(2)
-    arr1.add(20)
-    arr1.add(74)
-    # arr1.add(99) Array is full
+
+    try:
+        arr1.add(20)
+        arr1.add(74)
+        arr1.add(99)   # should raise OverflowError
+    except OverflowError as e:
+        print("Error:", e)
+
     arr1.print_array()
 
     print()
 
+    print("===== INSERT OPERATIONS =====")
+
     arr2 = MyArray(5)
+
     arr2.add(99)
     arr2.add(24)
+
     arr2.print_array()
     print()
 
@@ -244,6 +242,8 @@ if __name__ == "__main__":
     arr2.print_array()
     print()
 
+    print("===== DELETE OPERATIONS =====")
+
     arr2.delete_at(2)
     print("After removing the third element:")
     arr2.print_array()
@@ -258,3 +258,17 @@ if __name__ == "__main__":
     print("After removing the last element:")
     arr2.print_array()
     print()
+
+    print("===== ERROR EXAMPLES =====")
+
+    try:
+        arr2.delete_at(10)  # invalid index
+    except IndexError as e:
+        print("Error:", e)
+
+    empty = MyArray(3)
+
+    try:
+        empty.delete_end()  # deleting from empty array
+    except IndexError as e:
+        print("Error:", e)
