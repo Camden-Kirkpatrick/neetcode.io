@@ -109,7 +109,7 @@ class LinkedList:
         """
 
         if index < 0:
-            return
+            raise IndexError("Invalid index")
         
         node = Node(data)
 
@@ -118,7 +118,7 @@ class LinkedList:
         # Traverse forward until reaching the desired index
         for _ in range(index):
             if current is self.tail:
-                return
+                raise IndexError("Invalid index")
             current = current.next
 
         # current now points to the node currently at position "index"
@@ -148,7 +148,7 @@ class LinkedList:
         """
 
         if index < 0:
-            return None
+            raise IndexError("Invalid index")
 
         current = self.head.next
 
@@ -158,11 +158,11 @@ class LinkedList:
             if current is self.tail:
                 # With a dummy tail, reaching the tail means
                 # we ran out of real nodes
-                return None
+                raise IndexError("Invalid index")
             current = current.next
 
         if current is self.tail:
-            return None
+            raise IndexError("Invalid index")
 
         # current now points to the node at the requested index
         return current
@@ -180,12 +180,10 @@ class LinkedList:
         """
 
         node = self.get_node(index)
-
-        if node:
-            node.data = data
+        node.data = data
 
 
-    def delete_node_index(self, index):
+    def delete_at_index(self, index):
         """
         Delete the node at the given index.
 
@@ -199,7 +197,7 @@ class LinkedList:
         """
 
         if index < 0:
-            return
+            raise IndexError("Invalid index")
 
         # Start at the first real node
         # (self.head is a dummy/sentinel node)
@@ -207,11 +205,11 @@ class LinkedList:
 
         for _ in range(index):
             if current is self.tail:
-                return
+                raise IndexError("Invalid index")
             current = current.next
 
         if current is self.tail:
-            return
+            raise IndexError("Invalid index")
 
         # Store references to the nodes before and after
         # the node being deleted
@@ -241,8 +239,8 @@ class LinkedList:
 
         # The sentinel head is not a real node.
         # The first real node in the list is stored at head.next.
-        if node is self.head or node is self.tail:
-            return
+        if node is self.head or node is self.tail or node is None:
+            raise ValueError("Cannot delete sentinel or null node")
 
         prev_node = node.prev
         next_node = node.next
@@ -269,7 +267,7 @@ class LinkedList:
         """
 
         if self.is_empty():
-            return
+            raise IndexError("Cannot delete from empty list")
 
         first = self.head.next
 
@@ -291,7 +289,7 @@ class LinkedList:
         """
 
         if self.is_empty():
-            return
+            raise IndexError("Cannot delete from empty list")
 
         last = self.tail.prev
 
@@ -350,15 +348,17 @@ if __name__ == "__main__":
 
     print("Initial list:")
     linked_list.print_list()
+    print()
 
 
     # ----------------------------------------------------------
     # add_at_head
     # ----------------------------------------------------------
+    print("===== INSERT OPERATIONS =====")
     print("\nAdding nodes at head:")
-    linked_list.add_at_head(Node(10))
-    linked_list.add_at_head(Node(20))
-    linked_list.add_at_head(Node(30))
+    linked_list.add_at_head(10)
+    linked_list.add_at_head(20)
+    linked_list.add_at_head(30)
 
     # List should now be: 30 20 10
     linked_list.print_list()
@@ -368,8 +368,8 @@ if __name__ == "__main__":
     # add_at_tail
     # ----------------------------------------------------------
     print("\nAdding nodes at tail:")
-    linked_list.add_at_tail(Node(40))
-    linked_list.add_at_tail(Node(50))
+    linked_list.add_at_tail(40)
+    linked_list.add_at_tail(50)
 
     # List should now be: 30 20 10 40 50
     linked_list.print_list()
@@ -379,7 +379,7 @@ if __name__ == "__main__":
     # add_at_index
     # ----------------------------------------------------------
     print("\nInsert at index 2:")
-    linked_list.add_at_index(2, Node(99))
+    linked_list.add_at_index(2, 99)
 
     # List should now be: 30 20 99 10 40 50
     linked_list.print_list()
@@ -388,11 +388,10 @@ if __name__ == "__main__":
     # ----------------------------------------------------------
     # get_node
     # ----------------------------------------------------------
+    print("\n===== ACCESS / UPDATE =====")
     print("\nGet node at index 3:")
     node = linked_list.get_node(3)
-
-    if node:
-        print("Value:", node.data)
+    print("Value:", node.data)
 
 
     # ----------------------------------------------------------
@@ -408,8 +407,9 @@ if __name__ == "__main__":
     # ----------------------------------------------------------
     # delete_node_index
     # ----------------------------------------------------------
+    print("\n===== DELETE OPERATIONS =====")
     print("\nDelete node at index 2:")
-    linked_list.delete_node_index(2)
+    linked_list.delete_at_index(2)
 
     # List should now be: 30 111 10 40 50
     linked_list.print_list()
@@ -452,3 +452,42 @@ if __name__ == "__main__":
     # ----------------------------------------------------------
     print("\nReverse order:")
     linked_list.print_reverse()
+
+    print("\n===== ERROR HANDLING EXAMPLES =====")
+
+    try:
+        linked_list.get_node(100)
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        linked_list.set_node(-1, 500)
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        linked_list.add_at_index(100, 42)
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        linked_list.delete_at_index(100)
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        linked_list.delete_node_reference(None)
+    except ValueError as e:
+        print("Error:", e)
+
+    empty_list = LinkedList()
+
+    try:
+        empty_list.delete_head()
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        empty_list.delete_tail()
+    except IndexError as e:
+        print("Error:", e)
