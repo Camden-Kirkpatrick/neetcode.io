@@ -50,7 +50,7 @@ class Queue:
         Time Complexity: O(1)
         """
         if self.is_empty():
-            return
+            raise IndexError("Cannot dequeue from empty queue")
 
         first = self.items.head.next
         self.items.delete_head()
@@ -68,18 +68,91 @@ class Queue:
 
 
 if __name__ == "__main__":
+    print("===== BASIC QUEUE OPERATIONS =====")
     q = Queue()
+
+    print("Is empty:", q.is_empty())
+    print()
+
     q.enqueue(10)
     q.enqueue(20)
     q.enqueue(30)
 
+    print("After enqueueing 10, 20, and 30:")
     q.print_queue()
+    print("Is empty:", q.is_empty())
+    print()
 
     first = q.dequeue()
-    print("first:", first)
+    print("Dequeued:", first)
+    q.print_queue()
+    print()
 
     first = q.dequeue()
-    print("first:", first)
+    print("Dequeued:", first)
+    q.print_queue()
+    print()
 
     first = q.dequeue()
-    print("first:", first)
+    print("Dequeued:", first)
+    q.print_queue()
+    print("Is empty:", q.is_empty())
+    print()
+
+    print("===== ERROR HANDLING EXAMPLES =====")
+
+    try:
+        print("Trying to dequeue from empty queue:")
+        print(q.dequeue())
+    except IndexError as e:
+        print("Error:", e)
+
+    print()
+    print("===== LINKED LIST ERROR TEST =====")
+
+    try:
+        print("Trying to delete head from empty underlying linked list:")
+        q.items.delete_head()
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        print("Trying to delete tail from empty underlying linked list:")
+        q.items.delete_tail()
+    except IndexError as e:
+        print("Error:", e)
+
+    try:
+        print("Trying to get an invalid node from underlying linked list:")
+        q.items.get_node(0)
+    except IndexError as e:
+        print("Error:", e)
+
+    print()
+    print("===== MORE QUEUE TESTING =====")
+
+    q2 = Queue()
+    q2.enqueue(100)
+    q2.enqueue(200)
+    q2.enqueue(300)
+
+    print("Queue 2 after enqueueing 100, 200, 300:")
+    q2.print_queue()
+
+    print("Dequeued:", q2.dequeue())
+    print("Dequeued:", q2.dequeue())
+
+    print("Queue 2 now:")
+    q2.print_queue()
+
+    q2.enqueue(400)
+    print("After enqueueing 400:")
+    q2.print_queue()
+
+    print("Dequeued:", q2.dequeue())
+    print("Dequeued:", q2.dequeue())
+
+    try:
+        q2.dequeue()
+    except IndexError as e:
+        print("Error:", e)
