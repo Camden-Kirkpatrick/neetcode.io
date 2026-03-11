@@ -32,6 +32,10 @@ class LinkedList:
         self.tail.prev = self.head
 
 
+    def is_empty(self):
+        return self.head.next is self.tail
+
+
     def add_at_tail(self, data):
         """
         Append a node to the end of the list.
@@ -264,8 +268,7 @@ class LinkedList:
         Time Complexity: O(1)
         """
 
-        # If the list is empty, nothing to delete
-        if self.head.next is self.tail:
+        if self.is_empty():
             return
 
         first = self.head.next
@@ -287,8 +290,7 @@ class LinkedList:
         Time Complexity: O(1)
         """
 
-        # If the list is empty, nothing to delete
-        if self.tail.prev is self.head:
+        if self.is_empty():
             return
 
         last = self.tail.prev
