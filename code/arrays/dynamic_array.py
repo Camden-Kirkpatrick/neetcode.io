@@ -1,5 +1,3 @@
-# improved error handling in static_array.py
-
 class DynamicArray:
     """
     A resizable (dynamic) array implementation.
