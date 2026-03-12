@@ -79,7 +79,6 @@ if __name__ == "__main__":
     s = Stack()
 
     print("Initial size:", s.size())
-    print("Is empty:", s.is_empty())
     print()
 
     s.push(3)
@@ -104,7 +103,7 @@ if __name__ == "__main__":
 
     removed = s.pop()
     print("Popped:", removed)
-    print("Is empty:", s.is_empty())
+    print("Size:", s.size())
     print()
 
     print("===== ERROR HANDLING EXAMPLES =====")
