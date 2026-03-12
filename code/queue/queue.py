@@ -1,6 +1,6 @@
 # Go to "\code", then run: python -m queue.queue
 
-from linked_list.doubly_linked_list import LinkedList, Node
+from linked_list.doubly_linked_list import LinkedList
 
 
 class Queue:
@@ -17,11 +17,19 @@ class Queue:
     """
 
     def __init__(self):
-        self.items = LinkedList()
+        self.data = LinkedList()
+
+    
+    def size(self):
+        return self.data.size()
+    
+
+    def __len__(self):
+        return self.data.size()
 
 
     def is_empty(self):
-        return self.items.head.next is self.items.tail
+        return self.data.head.next is self.data.tail
 
 
     def enqueue(self, data):
@@ -34,7 +42,7 @@ class Queue:
 
         Time Complexity: O(1)
         """
-        self.items.add_at_tail(data)
+        self.data.add_at_tail(data)
 
 
     def dequeue(self):
@@ -52,8 +60,8 @@ class Queue:
         if self.is_empty():
             raise IndexError("Cannot dequeue from empty queue")
 
-        first = self.items.head.next
-        self.items.delete_head()
+        first = self.data.head.next
+        self.data.delete_head()
         return first.data
 
 
@@ -63,7 +71,7 @@ class Queue:
 
         Time Complexity: O(n)
         """
-        self.items.print_list()
+        self.data.print_list()
 
 
 
@@ -71,7 +79,9 @@ if __name__ == "__main__":
     print("===== BASIC QUEUE OPERATIONS =====")
     q = Queue()
 
-    print("Is empty:", q.is_empty())
+    print("Initial queue:")
+    q.print_queue()
+    print("Size:", q.size())
     print()
 
     q.enqueue(10)
@@ -80,7 +90,8 @@ if __name__ == "__main__":
 
     print("After enqueueing 10, 20, and 30:")
     q.print_queue()
-    print("Is empty:", q.is_empty())
+    print("q.size():", q.size())
+    print("len(q):", len(q))
     print()
 
     first = q.dequeue()
@@ -96,8 +107,6 @@ if __name__ == "__main__":
     first = q.dequeue()
     print("Dequeued:", first)
     q.print_queue()
-    print("Is empty:", q.is_empty())
-    print()
 
     print("===== ERROR HANDLING EXAMPLES =====")
 
@@ -112,19 +121,19 @@ if __name__ == "__main__":
 
     try:
         print("Trying to delete head from empty underlying linked list:")
-        q.items.delete_head()
+        q.data.delete_head()
     except IndexError as e:
         print("Error:", e)
 
     try:
         print("Trying to delete tail from empty underlying linked list:")
-        q.items.delete_tail()
+        q.data.delete_tail()
     except IndexError as e:
         print("Error:", e)
 
     try:
         print("Trying to get an invalid node from underlying linked list:")
-        q.items.get_node(0)
+        q.data.get_node(0)
     except IndexError as e:
         print("Error:", e)
 

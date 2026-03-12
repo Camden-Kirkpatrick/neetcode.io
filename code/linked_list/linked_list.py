@@ -28,6 +28,16 @@ class LinkedList:
         # head -> tail represents an empty list
         self.head.next = self.tail
 
+        self.length = 0
+
+
+    def size(self):
+        return self.length
+    
+
+    def __len__(self):
+        return self.length
+
 
     def is_empty(self):
         return self.head.next is self.tail
@@ -65,6 +75,8 @@ class LinkedList:
         node.next = next_node
         prev_node.next = node
 
+        self.length += 1
+
 
     def add_at_head(self, data):
         """
@@ -92,6 +104,8 @@ class LinkedList:
         node.next = next_node
         prev_node.next = node
 
+        self.length += 1
+
 
     def add_at_index(self, index, data):
         """
@@ -105,7 +119,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index > self.length:
             raise IndexError("Invalid index")
         
         node = Node(data)
@@ -128,6 +142,8 @@ class LinkedList:
         node.next = next_node
         prev_node.next = node
 
+        self.length += 1
+
 
     def get_node(self, index):
         """
@@ -142,7 +158,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index >= self.length:
             raise IndexError("Invalid index")
 
         current = self.head.next
@@ -188,7 +204,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index >= self.length:
             raise IndexError("Invalid index")
 
         # Start at the first real node
@@ -216,6 +232,8 @@ class LinkedList:
         # prev_node -> next_node
         prev_node.next = next_node
 
+        self.length -= 1
+
 
     def delete_head(self):
         """
@@ -235,6 +253,8 @@ class LinkedList:
         first = self.head.next
 
         self.head.next = first.next
+
+        self.length -= 1
 
 
     def delete_tail(self):
@@ -260,6 +280,8 @@ class LinkedList:
             current = current.next
 
         prev_node.next = self.tail
+
+        self.length -= 1
 
 
     def print_list(self):
@@ -291,6 +313,7 @@ if __name__ == "__main__":
 
     print("Initial list:")
     linked_list.print_list()
+    print("Size:", linked_list.size())
     print()
 
     print("===== INSERT OPERATIONS =====")
@@ -301,6 +324,8 @@ if __name__ == "__main__":
 
     print("After adding 10, 20, and 30 at head:")
     linked_list.print_list()
+    print("linked_list.size():", linked_list.size())
+    print("len(linked_list):", len(linked_list))
     print()
 
     linked_list.add_at_tail(40)

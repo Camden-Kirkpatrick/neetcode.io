@@ -20,30 +20,32 @@ class MyArray:
         3. Preallocate a contiguous block of memory using a list of size `capacity`.
         4. Fill all slots with None to represent unused memory.
         """
+
+        if capacity < 1:
+            raise ValueError("Capacity must be at least 1")
+
         self.capacity = capacity
         self.length = 0
         self.arr = [None] * capacity
 
+
+    def get_capacity(self):
+        return self.capacity
+
+
+    def size(self):
+        return self.length
+    
+
+    def __len__(self):
+        return self.length
+
+
     def is_full(self):
-        """
-        Check whether the array has reached capacity.
-
-        Algorithm:
-        Compare logical length with maximum capacity.
-
-        Time Complexity: O(1)
-        """
         return self.length == self.capacity
 
+
     def is_empty(self):
-        """
-        Check whether the array contains no elements.
-
-        Algorithm:
-        If logical length is 0, the array is empty.
-
-        Time Complexity: O(1)
-        """
         return self.length == 0
 
     def add(self, value, i=None):
@@ -67,16 +69,6 @@ class MyArray:
         self.arr[i] = value
         self.length += 1
 
-    def print_array(self):
-        """
-        Print the logical contents of the array.
-
-        Time Complexity: O(n)
-        """
-        print("Array: ", end="")
-        for i in range(self.length):
-            print(self.arr[i], end=" ")
-        print()
 
     def insert_at(self, index, value):
         """
@@ -197,6 +189,18 @@ class MyArray:
 
         self.length -= 1
         self.arr[self.length] = None
+    
+
+    def print_array(self):
+        """
+        Print the logical contents of the array.
+
+        Time Complexity: O(n)
+        """
+        print("Array: ", end="")
+        for i in range(self.length):
+            print(self.arr[i], end=" ")
+        print()
 
 
 
@@ -205,6 +209,8 @@ if __name__ == "__main__":
     print("===== BASIC ARRAY =====")
 
     arr1 = MyArray(2)
+    print("Initial size:", arr1.size())
+    print("Initial capacity:", arr1.get_capacity())
 
     try:
         arr1.add(20)
@@ -214,6 +220,8 @@ if __name__ == "__main__":
         print("Error:", e)
 
     arr1.print_array()
+    print("New size:", arr1.size())
+    print()
 
     print()
 
@@ -260,6 +268,10 @@ if __name__ == "__main__":
     print()
 
     print("===== ERROR EXAMPLES =====")
+    try:
+        arr3 = MyArray(0) # invalid capacity
+    except ValueError as e:
+        print("Error:", e)
 
     try:
         arr2.delete_at(10)  # invalid index

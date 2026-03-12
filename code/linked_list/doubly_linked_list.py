@@ -31,6 +31,16 @@ class LinkedList:
         self.head.next = self.tail
         self.tail.prev = self.head
 
+        self.length = 0
+
+
+    def size(self):
+        return self.length
+    
+
+    def __len__(self):
+        return self.length
+
 
     def is_empty(self):
         return self.head.next is self.tail
@@ -65,6 +75,8 @@ class LinkedList:
         next_node.prev = node
         prev_node.next = node
 
+        self.length += 1
+
     
     def add_at_head(self, data):
         """
@@ -95,6 +107,8 @@ class LinkedList:
         next_node.prev = node
         prev_node.next = node
 
+        self.length += 1
+
 
     def add_at_index(self, index, data):
         """
@@ -108,7 +122,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index > self.length:
             raise IndexError("Invalid index")
         
         node = Node(data)
@@ -133,6 +147,8 @@ class LinkedList:
         next_node.prev = node
         prev_node.next = node
 
+        self.length += 1
+
 
     def get_node(self, index):
         """
@@ -147,7 +163,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index >= self.length:
             raise IndexError("Invalid index")
 
         current = self.head.next
@@ -196,7 +212,7 @@ class LinkedList:
         Time Complexity: O(n)
         """
 
-        if index < 0:
+        if index < 0 or index >= self.length:
             raise IndexError("Invalid index")
 
         # Start at the first real node
@@ -222,6 +238,8 @@ class LinkedList:
         # With a dummy tail, next_node always exists
         # so we can safely update prev without checking for None
         next_node.prev = prev_node
+
+        self.length -= 1
 
 
     def delete_node_reference(self, node):
@@ -251,6 +269,8 @@ class LinkedList:
         # With a dummy tail, next_node is guaranteed to exist
         next_node.prev = prev_node
 
+        self.length -= 1
+
 
     def delete_head(self):
         """
@@ -274,6 +294,8 @@ class LinkedList:
         self.head.next = first.next
         first.next.prev = self.head
 
+        self.length -= 1
+
 
     def delete_tail(self):
         """
@@ -295,6 +317,8 @@ class LinkedList:
 
         self.tail.prev = last.prev
         last.prev.next = self.tail
+
+        self.length -= 1
 
 
     def print_list(self):
@@ -348,6 +372,7 @@ if __name__ == "__main__":
 
     print("Initial list:")
     linked_list.print_list()
+    print("Size:", linked_list.size())
     print()
 
 
@@ -362,6 +387,8 @@ if __name__ == "__main__":
 
     # List should now be: 30 20 10
     linked_list.print_list()
+    print("linked_list.size():", linked_list.size())
+    print("len(linked_list):", len(linked_list))
 
 
     # ----------------------------------------------------------

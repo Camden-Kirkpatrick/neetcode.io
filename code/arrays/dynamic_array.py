@@ -27,55 +27,24 @@ class DynamicArray:
         self.length = 0
         self.arr = [None] * capacity
 
+
     def size(self):
-        """
-        Return the logical number of elements stored.
-
-        Algorithm:
-        Return the current logical length.
-
-        Time Complexity: O(1)
-        """
         return self.length
     
+
     def __len__(self):
-        """
-        Equivalent to size().
-        Allows "len()" syntax.
-        """
         return self.length
     
+
     def get_capacity(self):
-        """
-        Return the current capacity of the underlying array.
-
-        Algorithm:
-        Return the current capacity.
-
-        Time Complexity: O(1)
-        """
         return self.capacity
 
+
     def is_full(self):
-        """
-        Check whether the array has reached capacity.
-
-        Algorithm:
-        Compare logical length with current capacity.
-
-        Time Complexity: O(1)
-        """
         return self.length == self.capacity
 
+
     def is_empty(self):
-        """
-        Check whether the array contains no elements.
-
-        Algorithm:
-        If logical length is 0, the array is empty.
-
-        Time Complexity: O(1)
-        """
         return self.length == 0
     
     def get(self, index):
@@ -93,6 +62,7 @@ class DynamicArray:
         
         return self.arr[index]
     
+
     def set(self, index, value):
         """
         Replace the element at a specific index.
@@ -107,6 +77,7 @@ class DynamicArray:
             raise IndexError("Invalid index")
         
         self.arr[index] = value
+
 
     def last(self):
         """
@@ -126,6 +97,7 @@ class DynamicArray:
             return None
         
         return self.arr[self.length - 1]
+
 
     def resize(self):
         """
@@ -147,6 +119,7 @@ class DynamicArray:
 
         self.arr = new_arr
         self.capacity = new_capacity
+
 
     def add(self, value, i=None):
         """
@@ -172,11 +145,6 @@ class DynamicArray:
         self.arr[i] = value
         self.length += 1
 
-    def print_array(self):
-        print("Array: ", end="")
-        for i in range(self.length):
-            print(self.arr[i], end=" ")
-        print()
 
     def insert_at(self, index, value):
         """
@@ -202,6 +170,7 @@ class DynamicArray:
 
         self.add(value, index)
 
+
     def insert_start(self, value):
         """
         Insert a value at the beginning of the array.
@@ -222,6 +191,7 @@ class DynamicArray:
 
         self.add(value, 0)
 
+
     def insert_end(self, value):
         """
         Insert a value at the end of the array.
@@ -233,6 +203,7 @@ class DynamicArray:
         Time Complexity: O(1) amortized
         """
         self.add(value)
+
 
     def delete_at(self, index):
         """
@@ -264,6 +235,7 @@ class DynamicArray:
         self.arr[self.length] = None
         return value
 
+
     def delete_start(self):
         """
         Delete and return the first element of the array.
@@ -290,6 +262,7 @@ class DynamicArray:
         self.arr[self.length] = None
         return value
 
+
     def delete_end(self):
         """
         Delete and return the last element of the array.
@@ -310,15 +283,22 @@ class DynamicArray:
         self.length -= 1
         self.arr[self.length] = None
         return value
+    
+
+    def print_array(self):
+        print("Array: ", end="")
+        for i in range(self.length):
+            print(self.arr[i], end=" ")
+        print()
 
 
 if __name__ == "__main__":
     # Basic creation + automatic resizing
     arr = DynamicArray(2)
 
+    arr.print_array()
     print("Initial size:", arr.size())
     print("Initial capacity:", arr.get_capacity())
-    arr.print_array()
     print()
 
     arr.insert_end(10)
@@ -326,7 +306,8 @@ if __name__ == "__main__":
 
     print("After inserting 10 and 20:")
     arr.print_array()
-    print("Size:", arr.size())
+    print("arr.size():", arr.size())
+    print("len(arr):", len(arr))
     print("Capacity:", arr.get_capacity())
     print()
 

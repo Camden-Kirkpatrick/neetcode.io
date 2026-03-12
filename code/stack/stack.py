@@ -22,34 +22,14 @@ class Stack:
 
 
     def size(self):
-        """
-        Return the number of elements in the stack.
-
-        Algorithm:
-        Return the size of the underlying dynamic array.
-
-        Time Complexity: O(1)
-        """
         return self.data.size()
     
 
     def __len__(self):
-        """
-        Equivalent to size().
-        Allow "len()" syntax.
-        """
         return self.data.size()
 
 
     def is_empty(self) -> bool:
-        """
-        Check whether the stack is empty.
-
-        Algorithm:
-        If the underlying array is empty, the stack is empty.
-
-        Time Complexity: O(1)
-        """
         return self.data.is_empty()
     
 
