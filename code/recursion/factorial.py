@@ -151,12 +151,12 @@ def factorial(n):
 
 if __name__ == "__main__":
 
-    print("Recursive factorial:")
+    print("Recursive Factorial:")
     for i in range(10):
         print(f"{i}! =", factorial_rec(i))
 
     print("\n")
 
-    print("Non-recursive factorial:")
+    print("Iterative Factorial:")
     for i in range(10):
         print(f"{i}! =", factorial(i))
