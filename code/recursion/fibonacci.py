@@ -188,5 +188,5 @@ if __name__ == "__main__":
     print("\n")
 
     print("Iterative Fibonacci:")
-    for i in range(10):
+    for i in range(5):
         print(fib(i), end=" ")
