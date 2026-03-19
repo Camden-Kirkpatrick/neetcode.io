@@ -2,152 +2,114 @@
 #
 # This program demonstrates the Insertion Sort algorithm.
 #
-# Insertion sort is a simple sorting algorithm that builds
-# the sorted array one element at a time.
+# Insertion sort builds a sorted portion of the array one
+# element at a time by inserting each element into its
+# correct position.
 #
 #
 # How Insertion Sort Works
 #
-# The array is divided into two conceptual parts:
+# The algorithm divides the array into two parts:
 #
-# Sorted portion | Unsorted portion
+# 1. A sorted portion (left side)
+# 2. An unsorted portion (right side)
 #
-# Initially:
-#
-# The first element is considered sorted.
-#
-# Example:
-#
-# [3, 2, 5, 4, 1]
-#
-# ^
-# sorted
+# It repeatedly takes the next element from the unsorted
+# portion and inserts it into the correct position in
+# the sorted portion.
 #
 #
-# At each step:
-#
-# 1. Take the next element from the unsorted portion.
-# 2. Compare it with elements in the sorted portion.
-# 3. Move larger elements one position to the right.
-# 4. Insert the element into the correct position.
-#
-#
-# Example Walkthrough
-#
-# Initial array:
+# Example
 #
 # [3, 2, 5, 4, 1]
 #
+# Step-by-step:
 #
-# Pass 1
+# Start:
+# [3 | 2, 5, 4, 1]
 #
-# i = 1
-# Compare 2 with 3
+# Insert 2 into sorted portion:
+# [2, 3 | 5, 4, 1]
 #
-# [3, 2, 5, 4, 1]
-#  ^
+# Insert 5:
+# [2, 3, 5 | 4, 1]
 #
-# Swap them
+# Insert 4:
+# [2, 3, 4, 5 | 1]
 #
-# [2, 3, 5, 4, 1]
-#
-#
-# Pass 2
-#
-# i = 2
-# Compare 5 with 3
-#
-# 5 is already larger, so nothing changes.
-#
-# [2, 3, 5, 4, 1]
-#
-#
-# Pass 3
-#
-# i = 3
-# Compare 4 with 5
-#
-# [2, 3, 5, 4, 1]
-#
-# Swap
-#
-# [2, 3, 4, 5, 1]
-#
-#
-# Pass 4
-#
-# i = 4
-#
-# Compare 1 with 5, 4, 3, 2
-#
-# Shift elements right until the correct spot is found.
-#
+# Insert 1:
 # [1, 2, 3, 4, 5]
 #
 #
 # Key Idea
 #
-# Each iteration inserts one element into the correct
-# position of the sorted portion of the array.
+# Take the current element and shift larger elements
+# in the sorted portion to the right to make space,
+# then insert the element into the correct position.
 #
 #
 # Complexity
 #
 # Another way to think about the runtime:
 #
-# The outer loop visits every element in the array once.
+# For each element, we may need to compare it with all
+# previous elements in the sorted portion.
 #
-# For each element, we may need to compare it with every
-# previous element in order to find the correct position
-# in the sorted portion of the array.
+# Example of maximum work:
 #
-# So the work can look like this in the worst case:
-#
-# element 1 → compare with 1 previous element
-# element 2 → compare with 2 previous elements
-# element 3 → compare with 3 previous elements
+# i = 1  -> compare with 1 element
+# i = 2  -> compare with 2 elements
+# i = 3  -> compare with 3 elements
 # ...
+# i = n-1 -> compare with n-1 elements
 #
-# Because we may scan many previous elements for each
-# element in the array, the total work grows roughly like:
+# Total work:
 #
-# n × n
+# 1 + 2 + 3 + ... + (n - 1)
 #
-# Worst Case Time Complexity: O(n²)
+# This equals:
 #
+# n(n - 1) / 2
 #
-# Best Case (already sorted)
-#
-# If the array is already sorted, the inner loop never runs
-# because each element is already greater than the one before it.
-#
-# Each iteration only performs one comparison.
+# Worst Case Time Complexity: O(n^2)
 #
 # Best Case Time Complexity: O(n)
+# (when the array is already sorted, no shifting occurs)
 #
 #
 # Space Complexity
 #
-# Insertion sort sorts the array in place and does not allocate
-# additional memory.
+# Insertion sort is in-place and uses no extra memory.
 #
 # Space Complexity: O(1)
 
+
 def insertion_sort(arr):
+    # Traverse from the second element to the end
     for i in range(1, len(arr)):
+
+        # Start comparing with the previous element
         j = i - 1
 
-        while j >= 0 and arr[j + 1] < arr[j]:
-            temp = arr[j + 1]
-            arr[j + 1] = arr[j]
-            arr[j] = temp
-            j -= 1
+        # Store the current value to insert
+        x = arr[i]
 
-    return arr
+        # Shift elements greater than x to the right
+        while j >= 0 and arr[j] > x:
+            arr[j + 1] = arr[j]  # shift right
+            j -= 1               # move left
+
+        # Insert x into its correct position
+        arr[j + 1] = x
 
 
 
 if __name__ == "__main__":
-    arr = [3, 2, 5, 4, 1]
-    sorted_arr = insertion_sort(arr)
-    print(sorted_arr)
+    arr = []
+    for i in range(10000):
+        arr.append(i)
+
+    arr.sort(reverse=True)
+
+    insertion_sort(arr)
+    print(arr)
