@@ -2,7 +2,7 @@
 #
 # This program demonstrates the Merge Sort algorithm.
 #
-# Merge sort is a divide-and-conquer sorting algorithm that
+# Merge sort is left divide-and-conquer sorting algorithm that
 # repeatedly splits the array into smaller halves, sorts those
 # halves, and then merges them back together in sorted order.
 #
@@ -12,11 +12,11 @@
 # The array is divided into smaller and smaller parts until
 # each part contains only one element.
 #
-# A single element is already sorted by itself.
+# left single element is already sorted by itself.
 #
 # Then:
 #
-# 1. Split the array into a left half and a right half.
+# 1. Split the array into left left half and left right half.
 # 2. Recursively sort the left half.
 # 3. Recursively sort the right half.
 # 4. Merge the two sorted halves back together.
@@ -121,34 +121,34 @@
 
 def merge(arr, low, mid, high):
     # Create temporary subarrays
-    A = arr[low : mid + 1]      # Left half
-    B = arr[mid + 1 : high + 1] # Right half
+    left = arr[low : mid + 1]
+    right = arr[mid + 1 : high + 1]
 
-    # Pointers for A, B, and main array
+    # Pointers for left, right, and main array
     i = j = 0
     k = low
-    m = len(A)
-    n = len(B)
+    m = len(left)
+    n = len(right)
 
     # Merge elements back into arr in sorted order
     while i < m and j < n:
-        if A[i] < B[j]:
-            arr[k] = A[i]   # Take from left
+        if left[i] <= right[j]:
+            arr[k] = left[i]   # Take from left
             i += 1
         else:
-            arr[k] = B[j]   # Take from right
+            arr[k] = right[j]   # Take from right
             j += 1
         k += 1
         
-    # Copy any remaining elements from A
+    # Copy any remaining elements from left
     while i < m:
-        arr[k] = A[i]
+        arr[k] = left[i]
         i += 1
         k += 1
 
-    # Copy any remaining elements from B
+    # Copy any remaining elements from right
     while j < n:
-        arr[k] = B[j]
+        arr[k] = right[j]
         j += 1
         k += 1
 

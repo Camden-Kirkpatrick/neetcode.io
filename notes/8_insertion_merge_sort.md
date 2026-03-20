@@ -376,30 +376,30 @@ Merge phase:
 
 ```python
 def merge(arr, low, mid, high):
-    A = arr[low : mid + 1]
-    B = arr[mid + 1 : high + 1]
+    left = arr[low : mid + 1]
+    right = arr[mid + 1 : high + 1]
 
     i = j = 0
     k = low
-    m = len(A)
-    n = len(B)
+    m = len(left)
+    n = len(right)
 
     while i < m and j < n:
-        if A[i] < B[j]:
-            arr[k] = A[i]
+        if left[i] <= right[j]:
+            arr[k] = left[i]
             i += 1
         else:
-            arr[k] = B[j]
+            arr[k] = right[j]
             j += 1
         k += 1
         
     while i < m:
-        arr[k] = A[i]
+        arr[k] = left[i]
         i += 1
         k += 1
 
     while j < n:
-        arr[k] = B[j]
+        arr[k] = right[j]
         j += 1
         k += 1
 
