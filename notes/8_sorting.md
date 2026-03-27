@@ -1,4 +1,4 @@
-# Sorting: Insertion Sort and Merge Sort
+# Sorting: Insertion Sort, Merge Sort, and Quick Sort
 
 ## What is Sorting?
 
@@ -392,7 +392,7 @@ def merge(arr, low, mid, high):
             arr[k] = right[j]
             j += 1
         k += 1
-        
+
     while i < m:
         arr[k] = left[i]
         i += 1
@@ -506,17 +506,17 @@ merge_sort([8, 3, 7, 4, 2, 6, 5, 1])
 |   |   |
 |   |   +-- merge_sort([8])
 |   |   +-- merge_sort([3])
-|   |   \\
+|   |   \
 |   |    merge -> [3, 8]
 |   |
 |   +-- merge_sort([7, 4])
 |   |   |
 |   |   +-- merge_sort([7])
 |   |   +-- merge_sort([4])
-|   |   \\
+|   |   \
 |   |    merge -> [4, 7]
 |   |
-|   \\
+|   \
 |    merge -> [3, 4, 7, 8]
 |
 +-- merge_sort([2, 6, 5, 1])
@@ -525,20 +525,20 @@ merge_sort([8, 3, 7, 4, 2, 6, 5, 1])
 |   |   |
 |   |   +-- merge_sort([2])
 |   |   +-- merge_sort([6])
-|   |   \\
+|   |   \
 |   |    merge -> [2, 6]
 |   |
 |   +-- merge_sort([5, 1])
 |   |   |
 |   |   +-- merge_sort([5])
 |   |   +-- merge_sort([1])
-|   |   \\
+|   |   \
 |   |    merge -> [1, 5]
 |   |
-|   \\
+|   \
 |    merge -> [1, 2, 5, 6]
 |
-\\
+\
  merge -> [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
@@ -779,7 +779,461 @@ Space Complexity: O(n)
 
 ---
 
-# Comparing Insertion Sort and Merge Sort
+# Quick Sort
+
+## What is Quick Sort?
+
+**Quick sort** is a **divide-and-conquer** sorting algorithm.
+
+Instead of merging sorted halves like merge sort, quick sort:
+
+1. picks a pivot
+2. partitions the array around that pivot
+3. recursively sorts the left and right sides
+
+---
+
+## How Quick Sort Works
+
+The array is divided based on a pivot element.
+
+After partitioning:
+
+- all elements smaller than the pivot are on the left
+- all elements greater than or equal to the pivot are on the right
+- the pivot is in its final sorted position
+
+Then the algorithm recursively sorts both sides.
+
+---
+
+## Example
+
+```text
+[4, 2, 7, 1, 6, 3, 8, 5]
+```
+
+---
+
+## Python Implementation
+
+```python
+def quick_sort(arr, start, end):
+    if start >= end:
+        return
+
+    pivot = arr[end]
+    left = start
+
+    for i in range(start, end):
+        if arr[i] < pivot:
+            arr[left], arr[i] = arr[i], arr[left]
+            left += 1
+
+    arr[end], arr[left] = arr[left], arr[end]
+
+    quick_sort(arr, start, left - 1)
+    quick_sort(arr, left + 1, end)
+```
+
+---
+
+## How Quick Sort Works Internally
+
+Suppose:
+
+```text
+arr = [4, 2, 7, 1, 6, 3, 8, 5]
+```
+
+### Step 1: First Partition
+
+```text
+quick_sort(arr, 0, 7)
+```
+
+Pivot (right-most element):
+
+```text
+5
+```
+
+After partitioning:
+
+```text
+[4, 2, 1, 3, 5, 7, 8, 6]
+```
+
+Now:
+
+```text
+left side  -> [4, 2, 1, 3]
+right side -> [7, 8, 6]
+```
+
+The pivot `5` is now in its final sorted position.
+
+---
+
+### Step 2: Partition the Left and Right Sides
+
+Left side:
+
+```text
+[4, 2, 1, 3]
+```
+
+Pivot:
+
+```text
+3
+```
+
+After partitioning:
+
+```text
+[2, 1, 3, 4]
+```
+
+Right side:
+
+```text
+[7, 8, 6]
+```
+
+Pivot:
+
+```text
+6
+```
+
+After partitioning:
+
+```text
+[6, 8, 7]
+```
+
+---
+
+### Step 3: Keep Partitioning
+
+Now the remaining unsorted subarrays are:
+
+```text
+[2, 1]   [8, 7]
+```
+
+Partition `[2, 1]` around pivot `1`:
+
+```text
+[1, 2]
+```
+
+Partition `[8, 7]` around pivot `7`:
+
+```text
+[7, 8]
+```
+
+Now the full array is sorted.
+
+---
+
+## Recursion Tree for Quick Sort
+
+This tree shows how the recursive calls partition the array:
+
+```text
+quick_sort([4, 2, 7, 1, 6, 3, 8, 5])
+|
++-- partition around 5 -> [4, 2, 1, 3] [5] [7, 8, 6]
+|
++-- quick_sort([4, 2, 1, 3])
+|   |
+|   +-- partition around 3 -> [2, 1] [3] [4]
+|   |
+|   +-- quick_sort([2, 1])
+|   |   |
+|   |   +-- partition around 1 -> [] [1] [2]
+|   |   |
+|   |   +-- quick_sort([])  -> base case
+|   |   +-- quick_sort([2]) -> base case
+|   |
+|   +-- quick_sort([4]) -> base case
+|
++-- quick_sort([7, 8, 6])
+|   |
+|   +-- partition around 6 -> [] [6] [8, 7]
+|   |
+|   +-- quick_sort([]) -> base case
+|   +-- quick_sort([8, 7])
+|       |
+|       +-- partition around 7 -> [] [7] [8]
+|       |
+|       +-- quick_sort([])  -> base case
+|       +-- quick_sort([8]) -> base case
+|
+\\
+ final sorted array -> [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+---
+
+## How the Partition Step Works
+
+Suppose we partition:
+
+```text
+[4, 2, 7, 1, 6, 3, 8, 5]
+```
+
+with pivot:
+
+```text
+5
+```
+
+We compare each element before the pivot to `5`:
+
+```text
+4 < 5 -> goes left
+2 < 5 -> goes left
+7 < 5 -> stays on right
+1 < 5 -> goes left
+6 < 5 -> stays on right
+3 < 5 -> goes left
+8 < 5 -> stays on right
+```
+
+After those comparisons, we place the pivot between the two groups:
+
+```text
+[4, 2, 1, 3, 5, 7, 8, 6]
+```
+
+So partitioning puts the pivot into its correct sorted position.
+
+---
+
+## Key Idea
+
+Quick sort works by placing one element, the pivot, into its correct position each time.
+
+After partitioning:
+
+- everything to the left is smaller
+- everything to the right is greater than or equal to it
+
+That means the pivot never needs to move again.
+
+---
+
+## Time Complexity
+
+### Where does the work happen?
+
+Quick sort has two main parts:
+
+1. Partitioning the array
+2. Recursively sorting the left and right sides
+
+The real work happens during **partitioning**.
+
+That is because partitioning scans through the current subarray once.
+
+---
+
+### Cost of One Partition
+
+Suppose the current subarray has size `n`.
+
+The loop checks every element except the pivot itself.
+
+So the partition step does:
+
+```text
+n - 1 comparisons
+```
+
+That means one partition takes:
+
+```text
+O(n) time
+```
+
+---
+
+### Work Per Level
+
+At each level of recursion, several partitions may happen.
+
+Using our example with `n = 8`:
+
+Level 1:
+
+```text
+[4, 2, 7, 1, 6, 3, 8, 5]
+```
+
+One partition of size 8:
+
+```text
+7 comparisons
+```
+
+Level 2:
+
+```text
+[4, 2, 1, 3]   [7, 8, 6]
+```
+
+Partitions of sizes 4 and 3:
+
+```text
+3 + 2 = 5 comparisons
+```
+
+Level 3:
+
+```text
+[2, 1]   [8, 7]
+```
+
+Partitions of sizes 2 and 2:
+
+```text
+1 + 1 = 2 comparisons
+```
+
+So the total comparisons per level are not always exactly `n - 1`.
+
+But they are **at most proportional to n**.
+
+The important pattern is:
+
+- each partition scans its own subarray once
+- the subarrays at one level do not overlap
+- so the total work across one level is at most `O(n)`
+
+---
+
+### Number of Levels
+
+In the best and average case, quick sort splits the array roughly in half each time:
+
+```text
+n → n/2 → n/4 → n/8 → ... → 1
+```
+
+So the number of levels is about:
+
+```text
+log2(n)
+```
+
+---
+
+### Total Work
+
+Now combine the two facts:
+
+- work per level = O(n)
+- number of levels = O(log n)
+
+So the total work is:
+
+```text
+O(n log n)
+```
+
+---
+
+### Best and Worst Case
+
+### Best / Average Case
+
+If partitions are reasonably balanced, quick sort has:
+
+```text
+Best Case Time Complexity: O(n log n)
+Average Case Time Complexity: O(n log n)
+```
+
+### Worst Case
+
+If the pivot is always the smallest or largest element, the partitions become very unbalanced:
+
+```text
+n → n - 1 → n - 2 → ...
+```
+
+That creates about `n` levels of recursion.
+
+Since each level still does up to `O(n)` work, the total becomes:
+
+```text
+Worst Case Time Complexity: O(n^2)
+```
+
+---
+
+### Final Intuition
+
+A simple way to remember it is:
+
+Quick sort does partitioning work across each level, and the total work on one level is at most proportional to `n`.
+
+If the recursion tree stays balanced, there are about `log(n)` levels.
+
+So:
+
+```text
+O(n log n)
+```
+
+If the tree becomes very unbalanced, there can be about `n` levels.
+
+So:
+
+```text
+O(n^2)
+```
+
+---
+
+## Space Complexity
+
+Quick sort is **in-place** because it does not create extra arrays for sorting.
+
+However, it still uses recursion.
+
+So the space depends on recursion depth:
+
+```text
+Best / Average Case: O(log n)
+Worst Case: O(n)
+```
+
+---
+
+## Strengths of Quick Sort
+
+- Very fast in practice
+- In-place
+- Good average-case performance
+- Very widely used
+
+---
+
+## Weaknesses of Quick Sort
+
+- Worst case is O(n^2)
+- Performance depends on pivot choice
+- Recursive depth can become large in bad cases
+
+---
+
+# Comparing Insertion Sort, Merge Sort, and Quick Sort
 
 ## Main Difference in Strategy
 
@@ -800,6 +1254,13 @@ split -> split -> split
 merge -> merge -> merge
 ```
 
+### Quick Sort
+Picks a pivot, partitions the array around it, then recursively sorts the two sides.
+
+```text
+partition -> partition -> partition
+```
+
 ---
 
 ## Intuition
@@ -812,16 +1273,20 @@ You keep one portion ordered and insert each new card where it belongs.
 ### Merge Sort feels like:
 Breaking a pile into smaller piles, sorting those small piles, then combining them.
 
+### Quick Sort feels like:
+Picking one value, putting it where it belongs, then doing the same thing to the left and right parts.
+
 ---
 
 ## Complexity Comparison
 
-| Metric | Insertion Sort | Merge Sort |
-|------|------|------|
-| Worst Case Time | O(n^2) | O(n log n) |
-| Best Case Time | O(n) | O(n log n) |
-| Space | O(1) | O(n) |
-| In-place | Yes | No (in this version) |
+| Metric | Insertion Sort | Merge Sort | Quick Sort |
+|------|------|------|------|
+| Worst Case Time | O(n^2) | O(n log n) | O(n^2) |
+| Best Case Time | O(n) | O(n log n) | O(n log n) |
+| Average Case Time | O(n^2) | O(n log n) | O(n log n) |
+| Space | O(1) | O(n) | O(log n) avg |
+| In-place | Yes | No (in this version) | Yes |
 
 ---
 
@@ -843,11 +1308,19 @@ Use when:
 - O(n log n) performance matters more than extra memory
 - you want to practice divide-and-conquer recursion
 
+### Quick Sort
+Use when:
+
+- you want a fast in-place algorithm
+- average-case performance matters
+- you are comfortable with recursion and partitioning
+- memory usage should stay low
+
 ---
 
 # Final Summary
 
-Insertion sort and merge sort both sort arrays, but they approach the problem very differently.
+Insertion sort, merge sort, and quick sort all sort arrays, but they approach the problem very differently.
 
 ## Insertion Sort
 - Builds a sorted portion one element at a time
@@ -864,6 +1337,16 @@ Insertion sort and merge sort both sort arrays, but they approach the problem ve
 - Time O(n log n)
 - Space O(n)
 
+## Quick Sort
+- Partitions the array around a pivot
+- Sorts recursively
+- Usually very fast in practice
+- Average time O(n log n)
+- Worst case O(n^2)
+- Space O(log n) average
+
 If you want a simple algorithm that is easy to trace by hand, insertion sort is often the better starting point.
 
-If you want better performance on larger arrays, merge sort is usually the better choice.
+If you want consistently good runtime, merge sort is a strong choice.
+
+If you want a fast in-place algorithm with very good average performance, quick sort is often the better choice.
