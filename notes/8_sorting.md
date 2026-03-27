@@ -779,6 +779,7 @@ Space Complexity: O(n)
 
 ---
 
+
 # Quick Sort
 
 ## What is Quick Sort?
@@ -1233,7 +1234,320 @@ Worst Case: O(n)
 
 ---
 
-# Comparing Insertion Sort, Merge Sort, and Quick Sort
+
+# Counting Sort
+
+## What is Counting Sort?
+
+**Counting sort** is a **non-comparison** sorting algorithm.
+
+Instead of comparing elements like insertion sort, merge sort, or quick sort, it counts how many times each value appears, then reconstructs the sorted array.
+
+---
+
+## How Counting Sort Works
+
+1. Find the maximum value in the array
+2. Create a counts array of size `(max + 1)`
+3. Count how many times each value appears
+4. Rebuild the original array using those counts
+
+---
+
+## Example
+
+```text
+[7, 3, 2, 4, 5, 1, 2, 3]
+```
+
+Maximum value:
+
+```text
+7
+```
+
+After counting:
+
+```text
+[0, 1, 2, 2, 1, 1, 0, 1]
+```
+
+Rebuilding:
+
+```text
+[1, 2, 2, 3, 3, 4, 5, 7]
+```
+
+---
+
+## Python Implementation
+
+```python
+def counting_sort(arr):
+    maxx = max(arr)
+    counts = [0] * (maxx + 1)
+
+    for x in arr:
+        counts[x] += 1
+
+    i = 0
+    for c in range(maxx + 1):
+        while counts[c] > 0:
+            arr[i] = c
+            i += 1
+            counts[c] -= 1
+```
+
+---
+
+## How the Code Works
+
+Suppose:
+
+```text
+arr = [7, 3, 2, 4, 5, 1, 2, 3]
+```
+
+### Step 1: Find the Maximum Value
+
+```python
+maxx = max(arr)
+```
+
+Here:
+
+```text
+maxx = 7
+```
+
+We use this to determine how many buckets we need.
+
+Since the values go from `0` to `7`, we need 8 positions in the counts array.
+
+---
+
+### Step 2: Create the Counts Array
+
+```python
+counts = [0] * (maxx + 1)
+```
+
+So we get:
+
+```text
+counts = [0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+Each index represents a value:
+
+```text
+counts[0] -> number of 0s
+counts[1] -> number of 1s
+counts[2] -> number of 2s
+...
+counts[7] -> number of 7s
+```
+
+---
+
+### Step 3: Count Each Value
+
+Now we loop through the input array:
+
+```python
+for x in arr:
+    counts[x] += 1
+```
+
+Process each value:
+
+```text
+Read 7 -> counts[7] += 1
+[0, 0, 0, 0, 0, 0, 0, 1]
+
+Read 3 -> counts[3] += 1
+[0, 0, 0, 1, 0, 0, 0, 1]
+
+Read 2 -> counts[2] += 1
+[0, 0, 1, 1, 0, 0, 0, 1]
+
+Read 4 -> counts[4] += 1
+[0, 0, 1, 1, 1, 0, 0, 1]
+
+Read 5 -> counts[5] += 1
+[0, 0, 1, 1, 1, 1, 0, 1]
+
+Read 1 -> counts[1] += 1
+[0, 1, 1, 1, 1, 1, 0, 1]
+
+Read 2 -> counts[2] += 1
+[0, 1, 2, 1, 1, 1, 0, 1]
+
+Read 3 -> counts[3] += 1
+[0, 1, 2, 2, 1, 1, 0, 1]
+```
+
+At the end, the counts array tells us exactly how many times each value appears.
+
+---
+
+### Step 4: Rebuild the Array
+
+Now we walk through the counts array from left to right:
+
+```python
+i = 0
+for c in range(maxx + 1):
+    while counts[c] > 0:
+        arr[i] = c
+        i += 1
+        counts[c] -= 1
+```
+
+This means:
+
+- if `counts[0] = 0`, write no 0s
+- if `counts[1] = 1`, write one 1
+- if `counts[2] = 2`, write two 2s
+- if `counts[3] = 2`, write two 3s
+- and so on
+
+Rebuild process:
+
+```text
+write 1  -> [1, _, _, _, _, _, _, _]
+write 2  -> [1, 2, _, _, _, _, _, _]
+write 2  -> [1, 2, 2, _, _, _, _, _]
+write 3  -> [1, 2, 2, 3, _, _, _, _]
+write 3  -> [1, 2, 2, 3, 3, _, _, _]
+write 4  -> [1, 2, 2, 3, 3, 4, _, _]
+write 5  -> [1, 2, 2, 3, 3, 4, 5, _]
+write 7  -> [1, 2, 2, 3, 3, 4, 5, 7]
+```
+
+Final result:
+
+```text
+[1, 2, 2, 3, 3, 4, 5, 7]
+```
+
+---
+
+## Key Idea
+
+The value of each element is used as an index into the counts array.
+
+That means counting sort does not need to compare elements to figure out which one is smaller.
+
+Instead, it records how many of each value exists, then writes them back in order.
+
+---
+
+## Time Complexity
+
+Let:
+
+- `n` = number of elements in the input array
+- `k` = number of possible values, from `0` to `maxx`
+
+### Counting Step
+
+```python
+for x in arr:
+    counts[x] += 1
+```
+
+This loop visits each element once.
+
+So the counting step takes:
+
+```text
+O(n)
+```
+
+---
+
+### Rebuild Step
+
+```python
+for c in range(maxx + 1):
+    while counts[c] > 0:
+        arr[i] = c
+```
+
+There are two parts to this work:
+
+1. We loop over all possible values from `0` to `maxx`
+   - that is `k` buckets
+
+2. Across all buckets, we write each element back exactly once
+   - that is `n` total writes
+
+So the rebuild step takes:
+
+```text
+O(n + k)
+```
+
+---
+
+### Total Time
+
+Combine both steps:
+
+- counting = `O(n)`
+- rebuilding = `O(n + k)`
+
+So the total time complexity is:
+
+```text
+O(n + k)
+```
+
+This is very fast when `k` is small.
+
+But if `k` is very large, the algorithm loses its advantage.
+
+---
+
+## Space Complexity
+
+Counting sort creates an extra counts array:
+
+```python
+counts = [0] * (maxx + 1)
+```
+
+That array has one slot for every possible value from `0` to `maxx`.
+
+So the extra space used is:
+
+```text
+O(k)
+```
+
+The original array is sorted in place, but the counts array is still extra memory.
+
+---
+
+## Limitation
+
+Counting sort requires a bucket for every value from `0` to `max(arr)`.
+
+If the maximum value is large, the counts array becomes very large,
+even if the input size is small.
+
+Because of this, counting sort is only practical when:
+
+- values are non-negative integers
+- the range of values is small
+
+In most real-world cases, values are large or widely spread out,
+so this algorithm is rarely used compared to algorithms like quick sort.
+
+---
+
+# Comparing Insertion Sort, Merge Sort, Quick Sort, and Counting Sort
 
 ## Main Difference in Strategy
 
@@ -1261,6 +1575,13 @@ Picks a pivot, partitions the array around it, then recursively sorts the two si
 partition -> partition -> partition
 ```
 
+### Counting Sort
+Counts how many times each value appears, then rebuilds the array in sorted order.
+
+```text
+count -> count -> rebuild
+```
+
 ---
 
 ## Intuition
@@ -1276,17 +1597,20 @@ Breaking a pile into smaller piles, sorting those small piles, then combining th
 ### Quick Sort feels like:
 Picking one value, putting it where it belongs, then doing the same thing to the left and right parts.
 
+### Counting Sort feels like:
+Counting how many copies of each value you have, then writing them back in order.
+
 ---
 
 ## Complexity Comparison
 
-| Metric | Insertion Sort | Merge Sort | Quick Sort |
-|------|------|------|------|
-| Worst Case Time | O(n^2) | O(n log n) | O(n^2) |
-| Best Case Time | O(n) | O(n log n) | O(n log n) |
-| Average Case Time | O(n^2) | O(n log n) | O(n log n) |
-| Space | O(1) | O(n) | O(log n) avg |
-| In-place | Yes | No (in this version) | Yes |
+| Metric | Insertion Sort | Merge Sort | Quick Sort | Counting Sort |
+|------|------|------|------|------|
+| Worst Case Time | O(n^2) | O(n log n) | O(n^2) | O(n + k) |
+| Best Case Time | O(n) | O(n log n) | O(n log n) | O(n + k) |
+| Average Case Time | O(n^2) | O(n log n) | O(n log n) | O(n + k) |
+| Space | O(1) | O(n) | O(log n) avg | O(k) |
+| In-place | Yes | No (in this version) | Yes | No |
 
 ---
 
@@ -1316,11 +1640,19 @@ Use when:
 - you are comfortable with recursion and partitioning
 - memory usage should stay low
 
+### Counting Sort
+Use when:
+
+- values are non-negative integers
+- the range of values is small
+- you want very fast sorting for that special case
+- extra memory for the counts array is acceptable
+
 ---
 
 # Final Summary
 
-Insertion sort, merge sort, and quick sort all sort arrays, but they approach the problem very differently.
+Insertion sort, merge sort, quick sort, and counting sort all sort arrays, but they approach the problem very differently.
 
 ## Insertion Sort
 - Builds a sorted portion one element at a time
@@ -1345,8 +1677,18 @@ Insertion sort, merge sort, and quick sort all sort arrays, but they approach th
 - Worst case O(n^2)
 - Space O(log n) average
 
+## Counting Sort
+- Counts how many times each value appears
+- Rebuilds the array from those counts
+- Time O(n + k)
+- Space O(k)
+- Very fast when the value range is small
+- Rarely practical when values are large or widely spread out
+
 If you want a simple algorithm that is easy to trace by hand, insertion sort is often the better starting point.
 
 If you want consistently good runtime, merge sort is a strong choice.
 
 If you want a fast in-place algorithm with very good average performance, quick sort is often the better choice.
+
+If the values are non-negative integers in a small range, counting sort can be very efficient.
