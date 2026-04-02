@@ -113,10 +113,7 @@
 
 class TreeNode:
     def __init__(self, data):
-        # Store the value in the node
         self.data = data
-
-        # Left and right children start as empty
         self.left = None
         self.right = None
 
