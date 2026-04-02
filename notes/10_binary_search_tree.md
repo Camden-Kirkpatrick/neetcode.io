@@ -1,4 +1,4 @@
-# Binary Search Trees: Search and Insert
+# Binary Search Trees: Search, Insert, and Remove
 
 ## What is a Binary Search Tree?
 
@@ -11,19 +11,9 @@ That rule lets us avoid checking every node.
 
 ---
 
-## Example Tree
+## Example Trees
 
-We will use these two trees in this file.
-
-### Tree Used for Insertion
-
-```text
-        10
-      /    \
-    8        13
-  /   \     /   \
- 4     9   11   17
-```
+We will use these trees in this file.
 
 ### Tree Used for Search
 
@@ -35,6 +25,26 @@ We will use these two trees in this file.
  4     9   11   17
               \
                12
+```
+
+### Tree Used for Insertion
+
+```text
+        10
+      /    \
+    8        13
+  /   \     /   \
+ 4     9   11   17
+```
+
+### Tree Used for Removal
+
+```text
+        4
+      /   \
+     3     6
+    /     / \
+   2     5   7
 ```
 
 ---
@@ -202,7 +212,7 @@ True
 
 ## What Happens While Returning from Recursion in Search?
 
-Now the retrun value will travel back up the call stack
+Now the return value will travel back up the call stack.
 
 We are passing a boolean answer back upward.
 
@@ -857,14 +867,715 @@ Which means:
 
 ---
 
+
+# Removing from a Binary Search Tree
+
+## What is BST Removal?
+
+**Removal** means deleting a value from the tree while keeping the BST property valid.
+
+This is more complicated than search and insertion because removing a node can change how the tree is connected.
+
+When we delete a node, we must make sure the values on the left are still smaller and the values on the right are still larger.
+
+---
+
+## How BST Removal Works
+
+1. Start at the root
+2. Compare the value to remove with the current node
+3. If the value is smaller, recurse left
+4. If the value is larger, recurse right
+5. If the value matches the current node, delete that node
+6. Return the updated subtree so parent nodes reconnect correctly
+
+---
+
+## The Three Deletion Cases
+
+When we find the node to remove, there are three possible cases.
+
+### Case 1: The node has no children
+
+This is a leaf node.
+
+We can remove it by returning `None`.
+
+### Case 2: The node has one child
+
+We return the single child.
+
+That child takes the deleted node's place.
+
+### Case 3: The node has two children
+
+We cannot just delete it immediately, because that would disconnect both subtrees.
+
+Instead:
+
+1. find the smallest node in the right subtree
+2. copy that value into the current node
+3. remove that duplicate value from the right subtree
+
+That smallest value in the right subtree is called the **inorder successor**.
+
+---
+
+## Python Implementation
+
+```python
+class TreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+def find_min(root):
+    while root.left:
+        root = root.left
+    return root
+
+
+def remove_node(root, data):
+    if not root:
+        return None
+
+    if data > root.data:
+        root.right = remove_node(root.right, data)
+    elif data < root.data:
+        root.left = remove_node(root.left, data)
+    else:
+        if not root.left:
+            return root.right
+        elif not root.right:
+            return root.left
+        else:
+            min_node = find_min(root.right)
+            root.data = min_node.data
+            root.right = remove_node(root.right, min_node.data)
+
+    return root
+```
+
+---
+
+## Tree Used for Removal
+
+We will remove values from this tree:
+
+```text
+        4
+      /   \
+     3     6
+    /     / \
+   2     5   7
+```
+
+This tree is useful because it lets us show all three deletion cases:
+
+- removing `4` shows the **two-children case**
+- removing `3` shows the **one-child case**
+- removing `5` shows the **leaf case**
+
+---
+
+## Walkthrough 1: Remove Node 4
+
+Suppose:
+
+```text
+remove 4
+```
+
+We start with:
+
+```text
+        4
+      /   \
+     3     6
+    /     / \
+   2     5   7
+```
+
+### Step 1
+
+Start at the root:
+
+```text
+current node = 4
+```
+
+Compare:
+
+```text
+4 == 4
+```
+
+So we found the node to remove.
+
+Now we must decide which deletion case applies.
+
+---
+
+### Step 2: Determine the Case
+
+Node `4` has:
+
+- a left child: `3`
+- a right child: `6`
+
+So this is the **two-children case**.
+
+We cannot simply return `None`.
+
+We also cannot simply return one child, because that would throw away the other subtree.
+
+So we need a replacement value that keeps the BST valid.
+
+---
+
+### Step 3: Find the Smallest Value in the Right Subtree
+
+The right subtree of `4` is:
+
+```text
+    6
+   / \
+  5   7
+```
+
+To find the smallest value in a BST subtree, we go left as far as possible.
+
+Start at `6`:
+
+```text
+6 -> go left -> 5
+```
+
+Node `5` has no left child, so `5` is the minimum.
+
+So:
+
+```text
+inorder successor = 5
+```
+
+---
+
+### Step 4: Copy the Successor Value into the Current Node
+
+We do:
+
+```python
+root.data = min_node.data
+```
+
+So the root node's value changes from `4` to `5`.
+
+The tree now looks like this:
+
+```text
+        5
+      /   \
+     3     6
+    /     / \
+   2     5   7
+```
+
+This can look strange at first, because now there are temporarily **two 5s**.
+
+That is okay.
+
+The next step is to delete the duplicate `5` from the right subtree.
+
+---
+
+### Step 5: Remove the Duplicate 5 from the Right Subtree
+
+We make this recursive call:
+
+```python
+root.right = remove_node(root.right, 5)
+```
+
+That means:
+
+- go into the subtree rooted at `6`
+- remove the node with value `5`
+
+Now we trace that recursive deletion.
+
+---
+
+### Step 6: Recursive Deletion Inside the Right Subtree
+
+We are now at node `6`.
+
+Compare:
+
+```text
+5 < 6
+```
+
+So we recurse left:
+
+```python
+root.left = remove_node(root.left, 5)
+```
+
+That takes us to node `5`.
+
+Now compare:
+
+```text
+5 == 5
+```
+
+We found the node to delete.
+
+This node has:
+
+- no left child
+- no right child
+
+So this is the **leaf case**.
+
+The function returns:
+
+```python
+None
+```
+
+That means node `6.left` becomes `None`.
+
+So the subtree rooted at `6` is now:
+
+```text
+  6
+   \
+    7
+```
+
+---
+
+## What Happens While Returning from Recursion in Remove 4?
+
+Now the updated subtree returns upward.
+
+### Return to the Call at Node 6
+
+Node `6` made this call:
+
+```python
+root.left = remove_node(root.left, 5)
+```
+
+That call returned `None`.
+
+So now:
+
+```python
+6.left = None
+```
+
+Node `6` then returns itself upward.
+
+---
+
+### Return to the Original Call at the Root
+
+The original root node, which now stores `5`, made this call:
+
+```python
+root.right = remove_node(root.right, 5)
+```
+
+That call returned the updated subtree rooted at `6`.
+
+So the root reconnects its right child to that updated subtree.
+
+---
+
+## Final Tree After Removing 4
+
+```text
+        5
+      /   \
+     3     6
+    /       \
+   2         7
+```
+
+---
+
+## Why Removing 4 Shows the Two-Children Case
+
+The original node `4` had two children.
+
+So removal required three important ideas:
+
+1. find a replacement value
+2. copy it into the node being deleted
+3. delete the duplicate from the right subtree
+
+This is the most complex deletion case.
+
+---
+
+## Walkthrough 2: Remove Node 3
+
+For this example, start again from the **original tree**:
+
+```text
+        4
+      /   \
+     3     6
+    /     / \
+   2     5   7
+```
+
+Suppose:
+
+```text
+remove 3
+```
+
+### Step 1
+
+Start at the root:
+
+```text
+current node = 4
+```
+
+Compare:
+
+```text
+3 < 4
+```
+
+So the value must be in the **left subtree**.
+
+We make this recursive call:
+
+```python
+root.left = remove_node(root.left, 3)
+```
+
+That takes us to node `3`.
+
+---
+
+### Step 2
+
+Now we are at node `3`.
+
+Compare:
+
+```text
+3 == 3
+```
+
+We found the node to remove.
+
+Now we determine the case.
+
+---
+
+### Step 3: Determine the Case
+
+Node `3` has:
+
+- a left child: `2`
+- no right child
+
+So this is the **one-child case**.
+
+Since node `3` only has one child, we do not need a successor.
+
+We simply return its only child.
+
+This line runs:
+
+```python
+return root.left
+```
+
+That returns node `2`.
+
+---
+
+## What Happens While Returning from Recursion in Remove 3?
+
+Now that returned node `2` goes back to the caller.
+
+### Return to the Call at Node 4
+
+Node `4` made this call:
+
+```python
+root.left = remove_node(root.left, 3)
+```
+
+That call returned node `2`.
+
+So node `4` now does:
+
+```python
+4.left = 2
+```
+
+That means node `2` takes node `3`'s place in the tree.
+
+---
+
+## Final Tree After Removing 3
+
+```text
+        4
+      /   \
+     2     6
+          / \
+         5   7
+```
+
+---
+
+## Why Removing 3 Shows the One-Child Case
+
+The node `3` had exactly one child.
+
+So deletion was simpler:
+
+- remove node `3`
+- connect its parent directly to node `2`
+
+Nothing else had to be rearranged.
+
+---
+
+## Walkthrough 3: Remove Node 5
+
+Again, start from the **original tree**:
+
+```text
+        4
+      /   \
+     3     6
+    /     / \
+   2     5   7
+```
+
+Suppose:
+
+```text
+remove 5
+```
+
+### Step 1
+
+Start at the root:
+
+```text
+current node = 4
+```
+
+Compare:
+
+```text
+5 > 4
+```
+
+So we recurse right:
+
+```python
+root.right = remove_node(root.right, 5)
+```
+
+That takes us to node `6`.
+
+---
+
+### Step 2
+
+At node `6`, compare:
+
+```text
+5 < 6
+```
+
+So we recurse left:
+
+```python
+root.left = remove_node(root.left, 5)
+```
+
+That takes us to node `5`.
+
+---
+
+### Step 3
+
+Now we are at node `5`.
+
+Compare:
+
+```text
+5 == 5
+```
+
+We found the node to remove.
+
+Now determine the case.
+
+---
+
+### Step 4: Determine the Case
+
+Node `5` has:
+
+- no left child
+- no right child
+
+So this is the **leaf case**.
+
+A leaf node can simply be removed by returning `None`.
+
+So this call returns:
+
+```python
+None
+```
+
+---
+
+## What Happens While Returning from Recursion in Remove 5?
+
+### Return to the Call at Node 6
+
+Node `6` made this call:
+
+```python
+root.left = remove_node(root.left, 5)
+```
+
+That call returned `None`.
+
+So now:
+
+```python
+6.left = None
+```
+
+Node `6` returns itself upward.
+
+---
+
+### Return to the Call at Node 4
+
+Node `4` made this call:
+
+```python
+root.right = remove_node(root.right, 5)
+```
+
+That call returned the updated subtree rooted at `6`.
+
+So node `4` reconnects its right child to that subtree.
+
+---
+
+## Final Tree After Removing 5
+
+```text
+        4
+      /   \
+     3     6
+    /       \
+   2         7
+```
+
+---
+
+## Why Removing 5 Shows the Leaf Case
+
+The node `5` had no children.
+
+So deletion was the simplest possible case:
+
+- return `None`
+- parent disconnects that leaf
+
+---
+
+## Key Idea for Removal
+
+Just like insertion, deletion uses recursion to move downward.
+
+But unlike insertion, the return value can mean different things:
+
+- `None` if a node is removed and nothing replaces it
+- a child node if one child takes the deleted node's place
+- the same root node, but with an updated subtree attached
+
+That is why these lines matter:
+
+```python
+root.right = remove_node(root.right, data)
+root.left = remove_node(root.left, data)
+```
+
+They recurse downward, then reconnect the updated subtree on the way back up.
+
+---
+
+## Time Complexity of Removal
+
+Let `n` = number of nodes.
+
+### Balanced tree
+
+If the tree is balanced, removal takes:
+
+```text
+O(log n)
+```
+
+because we only travel down the height of the tree.
+
+### Skewed tree
+
+If the tree is skewed, removal takes:
+
+```text
+O(n)
+```
+
+because we may have to walk through the whole chain.
+
+---
+
+## Space Complexity of Removal
+
+This recursive version uses the call stack.
+
+So the space complexity is:
+
+```text
+O(h)
+```
+
+Where `h` is the height of the tree.
+
+That means:
+
+- balanced tree: `O(log n)`
+- skewed tree: `O(n)`
+
+---
+
 ## Final Summary
-
-### Insertion
-
-- starts at the root
-- moves left or right based on comparisons
-- creates a new node when it reaches `None`
-- reconnects the updated subtree while returning from recursion
 
 ### Search
 
@@ -874,7 +1585,21 @@ Which means:
 - returns `False` if it reaches `None`
 - passes the answer back up through the recursive calls
 
-Both operations depend on the BST property:
+### Insertion
+
+- starts at the root
+- moves left or right based on comparisons
+- creates a new node when it reaches `None`
+- reconnects the updated subtree while returning from recursion
+
+### Removal
+
+- starts at the root
+- moves left or right based on comparisons
+- handles one of three deletion cases when the node is found
+- returns the updated subtree while recursion unwinds
+
+All three operations depend on the BST property:
 
 ```text
 left < node < right
