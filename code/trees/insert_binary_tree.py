@@ -144,8 +144,6 @@ def insert_node(root, data):
 #   /   \     /   \
 # 4       9  11    17
 if __name__ == "__main__":
-
-    # Create root node
     root = TreeNode(10)
 
     # Build left subtree

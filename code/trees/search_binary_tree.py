@@ -157,8 +157,6 @@ def search_tree(root, target):
 #               \
 #                12
 if __name__ == "__main__":
-
-    # Build the same BST as insert_binary_tree
     root = TreeNode(10)
 
     n1 = TreeNode(8)
@@ -179,10 +177,8 @@ if __name__ == "__main__":
     n6 = TreeNode(17)
     n2.right = n6
 
-    # Insert 12 to match final tree
     n7 = TreeNode(12)
     n4.right = n7
-
 
     # Search for a value
     target = 12
