@@ -1,3 +1,101 @@
+# Binary Tree Depth-First Search (DFS) Traversals
+#
+# This program demonstrates how to traverse a Binary Tree
+# using Depth-First Search (DFS).
+#
+# A Binary Tree is a structure where each node can have:
+#   - a left child
+#   - a right child
+#
+#
+# What This Program Does
+#
+# 1. Defines a TreeNode class
+# 2. Builds a Binary Search Tree (BST)
+# 3. Traverses the tree using three DFS methods:
+#       - Inorder
+#       - Preorder
+#       - Postorder
+#
+#
+# What is DFS?
+#
+# Depth-First Search explores a tree by going as deep as possible
+# before backtracking.
+#
+# Instead of visiting nodes level-by-level (like BFS),
+# DFS fully explores one path before moving to another.
+#
+#
+# Types of DFS Traversals
+#
+# 1. Inorder (Left → Node → Right)
+#    - Visit left subtree
+#    - Visit current node
+#    - Visit right subtree
+#
+#    For a BST, this gives values in sorted order.
+#
+#
+# 2. Preorder (Node → Left → Right)
+#    - Visit current node first
+#    - Then explore left subtree
+#    - Then explore right subtree
+#
+#    Useful for copying or reconstructing trees.
+#
+#
+# 3. Postorder (Left → Right → Node)
+#    - Visit left subtree
+#    - Visit right subtree
+#    - Visit current node last
+#
+#    Useful for deleting/freeing trees.
+#
+#
+# Example Tree:
+#
+#         4
+#       /   \
+#      3     6
+#     /     / \
+#    2     5   7
+#
+#
+# Traversal Results:
+#
+# Inorder   → 2 3 4 5 6 7
+# Preorder  → 4 3 2 6 5 7
+# Postorder → 2 3 5 7 6 4
+#
+#
+# Key Idea
+#
+# DFS is naturally implemented using recursion.
+#
+# Each function call:
+#   → processes a node
+#   → then recursively processes its children
+#
+#
+# Complexity
+#
+# Let:
+# n = number of nodes
+#
+# Time Complexity:
+#   O(n) → every node is visited once
+#
+# Space Complexity:
+#   O(h) → recursion stack (h = height of tree)
+#
+#   Best Case (balanced):
+#       O(log n)
+#
+#   Worst Case (skewed):
+#       O(n)
+
+
 class TreeNode:
     def __init__(self, data):
         self.data = data
@@ -18,29 +116,50 @@ def insert_node(root, data):
 
 
 def inorder(root):
+    # Base Case:
+    # If the current node is None, stop recursion
     if not root:
         return
     
+    # Visit left subtree
     inorder(root.left)
+
+    # Visit current node
     print(root.data)
+
+    # Visit right subtree
     inorder(root.right)
 
 
 def preorder(root):
+    # Base Case:
+    # If the current node is None, stop recursion
     if not root:
         return
     
+    # Visit current node FIRST
     print(root.data)
+
+    # Then explore left subtree
     preorder(root.left)
+
+    # Then explore right subtree
     preorder(root.right)
 
 
 def postorder(root):
+    # Base Case:
+    # If the current node is None, stop recursion
     if not root:
         return
     
+    # Visit left subtree
     postorder(root.left)
+
+    # Visit right subtree
     postorder(root.right)
+
+    # Visit current node LAST
     print(root.data)
 
 
