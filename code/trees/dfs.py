@@ -163,6 +163,21 @@ def postorder(root):
     print(root.data)
 
 
+# Use DFS to traverse the tree and add node values to an array
+def inorder_array(root):
+    arr = []
+
+    def dfs(root):
+        if not root:
+            return
+        
+        dfs(root.left)
+        arr.append(root.data)
+        dfs(root.right)
+
+    dfs(root)
+    return arr
+
 #       4
 #     /   \
 #    3     6
@@ -186,4 +201,7 @@ if __name__ == "__main__":
 
     print("postorder traversal:")
     postorder(root)
-    print()
+    print("\n\n")
+
+    node_vals = inorder_array(root)
+    print("nodes:", node_vals)
