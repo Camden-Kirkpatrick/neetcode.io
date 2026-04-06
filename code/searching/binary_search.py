@@ -32,6 +32,17 @@
 #    - the search space becomes empty (low > high)
 #
 #
+# Why "low + (high - low) // 2" Instead of "(low + high) // 2"
+#
+# Using (low + high) // 2 can cause an integer overflow in
+# some languages (like C/C++/Java) if low + high exceeds
+# the maximum integer value.
+#
+# Using low + (high - low) // 2 avoids this, because
+# the subtraction happens first, keeping the value within
+# the valid integer range.
+#
+#
 # Example
 #
 # Input:
@@ -90,7 +101,8 @@ def binary_search(arr, target):
 
     # Continue searching while there is a valid range
     while low <= high:
-        mid = (low + high) // 2  # middle index
+        # Safe middle index calculation
+        mid = low + (high - low) // 2
 
         # If target is greater, ignore left half
         if target > arr[mid]:

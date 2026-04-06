@@ -15,10 +15,13 @@ Instead of checking every element one by one, it repeatedly cuts the search spac
    - `high` at the end of the array
 
 2. Find the middle index:
-
 ```text
-mid = (low + high) // 2
+mid = low + (high - low) // 2
 ```
+**Why use `low + (high - low) // 2` instead of `(low + high) // 2`?**  
+- In some programming languages (like C, C++, or Java), `low + high` can exceed the maximum integer value if the array is very large, causing an **integer overflow**.  
+- By computing `high - low` first, we ensure the value stays within the valid range.  
+- Adding `low` afterward gives the same middle index but **avoids potential overflow**. 
 
 3. Compare the target with the middle value:
 
@@ -40,7 +43,7 @@ def binary_search(arr, target):
     high = len(arr) - 1
 
     while low <= high:
-        mid = (low + high) // 2
+        mid = low + (high - low) // 2
 
         if target > arr[mid]:
             low = mid + 1
