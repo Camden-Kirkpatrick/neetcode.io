@@ -110,17 +110,45 @@ def bfs(root):
     # Drain the queue in layers: each pass handles one depth before any deeper nodes print.
     while len(queue) > 0:
         print("level:", level)
+
         # Snapshot queue length so we only process nodes already in the queue:
-        # one full level per outer iteration.
+        # This guarantees we process exactly one full level per iteration.
         for _ in range(len(queue)):
             curr = queue.popleft()
             print(curr.data)
-            # Children join the back of the queue and are visited in a later layer.
+
+            # Children are added to the back of the queue.
+            # They will be processed in the NEXT level.
             if curr.left:
                 queue.append(curr.left)
             if curr.right:
                 queue.append(curr.right)
+
         level += 1
+
+
+def bfs_simple(root):
+    queue = deque()
+
+    # Base case: empty tree
+    if not root:
+        return
+
+    queue.append(root)
+
+    # This is a simpler BFS with NO level tracking.
+    # We just process nodes in the order they appear in the queue.
+    while len(queue) > 0:
+        curr = queue.popleft()
+        print(curr.data)
+
+        # Children are still added in left → right order,
+        # so traversal order is still level-order,
+        # BUT we lose the ability to group nodes by level.
+        if curr.left:
+            queue.append(curr.left)
+        if curr.right:
+            queue.append(curr.right)
 
 
 #       4
@@ -138,3 +166,6 @@ if __name__ == "__main__":
 
     print("level-order traversal (by level):")
     bfs(root)
+
+    print("\nlevel-order traversal (no level grouping):")
+    bfs_simple(root)
